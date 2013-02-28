@@ -6,7 +6,7 @@
  *
  */
 
-namespace MedWave\System\Login {
+namespace MedWave\System\User {
 
 	class UserModel {
 

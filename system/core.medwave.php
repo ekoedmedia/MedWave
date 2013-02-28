@@ -15,11 +15,16 @@
 namespace MedWave\Core {
 
 	class System {
-		
+	
+		public function __construct()
+		{
+			##TODO: Add YAML parse file to get environment settings
+		}
+	
 		##TODO: Add Autoload Methods into the Class
-		##TODO: Add Database Connection Methods to Class
 		##TODO: Add Routing Methods into Class
-		
+		##TODO: Add Database connection	
+	
 	}
 
 }

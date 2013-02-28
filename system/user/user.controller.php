@@ -5,10 +5,10 @@
  *
  */
 
-use MedWave\System\Login\UserModel as UserModel;
+use MedWave\System\User\UserModel as UserModel;
 use MedWave\System\ORM\Mapper as ORM;
 
-namespace MedWave\System\Login {
+namespace MedWave\System\User {
 
 	class UserController {
 

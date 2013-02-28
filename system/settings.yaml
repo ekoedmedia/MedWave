@@ -1,0 +1,22 @@
+##################################
+# MedWave | Waves for the Future #
+# Version 1.0 - AlphaWave        #
+# Written By: Jeremy Smereka     #
+#             Amir Salimi        #
+# ------------------------------ #
+# settings.yaml                  #
+# Provides environment settings  #
+# such as database connection    #
+# information and language for   #
+# MedWave.                       #
+##################################
+
+# Database Environment Settings
+database_env:
+    type: mysql
+    user: 
+    pass:
+    host: localhost
+    port: 
+
+
