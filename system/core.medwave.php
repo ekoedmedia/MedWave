@@ -43,11 +43,11 @@ namespace MedWave\Core {
                     print $e->getMessage();
                 }
                 
-			} 
-		}
+            } 
+        }
 	
-		##TODO: Add Autoload Methods Here
-		##TODO: Add Routing Methods Here
+        ##TODO: Add Autoload Methods Here
+        ##TODO: Add Routing Methods Here
         
         /**
          * Gets Database Connection
@@ -59,6 +59,6 @@ namespace MedWave\Core {
             return $this->dbcon;
         }	
 
-	}
+    }
 
 }
