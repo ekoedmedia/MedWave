@@ -30,7 +30,7 @@ namespace MedWave\Core {
                 throw new \InvalidArgumentException("Settings.yaml does not exist or is unreadable.");
             } else {
                 // Database connection begins
-			    $db_envir = $envir['database_env'];
+                $db_envir = $envir['database_env'];
                 $db_string = Connector::create_connection_string($envir['type'],
                                                                  $envir['name'],
                                                                  $envir['user'],
