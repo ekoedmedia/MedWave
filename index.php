@@ -1,3 +1,10 @@
+<?php
+
+require('system/core.medwave.php');
+$core = new MedWave\Core\System();
+$db = $core->getDbcon();
+
+?>
 <!DOCTYPE html>
 <html>
 <head>

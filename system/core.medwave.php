@@ -20,15 +20,15 @@ namespace MedWave\Core {
 
         protected $dbcon;	
 
-		public function __construct()
-		{
+        public function __construct()
+        {
             ##TODO: Add Autoload Registers Here
 
             // Parse YAML file to get Environment Settings
-			$envir = yaml_parse_file('settings.yaml');
-			if ($envir == false) {
-			    throw new \InvalidArgumentException("Settings.yaml does not exist or is unreadable.");
-			} else {
+            $envir = yaml_parse_file('settings.yaml');
+            if ($envir == false) {
+                throw new \InvalidArgumentException("Settings.yaml does not exist or is unreadable.");
+            } else {
                 // Database connection begins
 			    $db_envir = $envir['database_env'];
                 $db_string = Connector::create_connection_string($envir['type'],
