@@ -10,11 +10,11 @@
  query. Extends the PDO class.
 \******************************/
 
-use MedWave\System\ORM\Mapper as Mapper;
-
 namespace MedWave\System\ORM {
 	
-	class Connector extends PDO {
+	use MedWave\System\ORM\Mapper as Mapper;
+	
+	class Connector extends \PDO {
 		
 		/**
 		 * Calls parent constructor with same parameters
@@ -60,7 +60,7 @@ namespace MedWave\System\ORM {
                     $sDbname = "dbname=$dbname";
                     $db_string = "mysql:$sHost$sPort$sDbname";
                     break;
-                case default:
+                default:
                     throw new \InvalidArgumentException("Database of Type ".$type." is not valid type.");
                     break;
             }

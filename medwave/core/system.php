@@ -12,9 +12,9 @@
  routes are being accessed.
 \******************************/
 
-use MedWave\System\ORM\Connector as Connector;
-
 namespace MedWave\Core {
+
+	use \MedWave\System\ORM as ORM;
 
 	class System {
 
@@ -25,20 +25,22 @@ namespace MedWave\Core {
             ##TODO: Add Autoload Registers Here
 
             // Parse YAML file to get Environment Settings
-            $envir = json_decode('settings.json');
+ 	    $fileContents = file_get_contents(dirname(__FILE__)."/settings.json");
+            $envir = json_decode($fileContents);
             if ($envir == false) {
-                throw new \InvalidArgumentException("Settings.yaml does not exist or is unreadable.");
+                throw new \InvalidArgumentException(dirname(__FILE__)."/settings.json does not exist or is unreadable.");
             } else {
                 // Database connection begins
+		##TODO: Make this a foreach loop which creates connection for each DB_Envir defined.
                 $db_envir = $envir->database_env;
-                $db_string = Connector::create_connection_string($envir->type,
-                                                                 $envir->name,
-                                                                 $envir->user,
-                                                                 $envir->pass,
-                                                                 $envir->host,
-                                                                 $envir->port);
+                $db_string = ORM\Connector::create_connection_string($db_envir[0]->type,
+                                                                 $db_envir[0]->name,
+                                                                 $db_envir[0]->user,
+                                                                 $db_envir[0]->pass,
+                                                                 $db_envir[0]->host,
+                                                                 $db_envir[0]->port);
                 try { 
-                    $this->dbcon = new Connector($db_string, $envir->user, $envir->pass);
+                    $this->dbcon = new ORM\Connector($db_string, $db_envir[0]->user, $db_envir[0]->pass);
                 } catch (\PDOException $e) {
                     print $e->getMessage();
                 }
