@@ -25,12 +25,8 @@ namespace MedWave\Core {
             ##TODO: Add Autoload Registers Here
 
             // Parse YAML file to get Environment Settings
-<<<<<<< HEAD
  	    $fileContents = file_get_contents(dirname(__FILE__)."/settings.json");
             $envir = json_decode($fileContents);
-=======
-            $envir = json_decode(dirname(__FILE__).'/settings.json');
->>>>>>> 8d7c41ad7127e58a213bbf8394f172bd624ade16
             if ($envir == false) {
                 throw new \InvalidArgumentException(dirname(__FILE__)."/settings.json does not exist or is unreadable.");
             } else {
