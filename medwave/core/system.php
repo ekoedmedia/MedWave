@@ -25,9 +25,9 @@ namespace MedWave\Core {
             ##TODO: Add Autoload Registers Here
 
             // Parse YAML file to get Environment Settings
-            $envir = json_decode('settings.json');
+            $envir = json_decode(dirname(__FILE__).'/settings.json');
             if ($envir == false) {
-                throw new \InvalidArgumentException("Settings.yaml does not exist or is unreadable.");
+                throw new \InvalidArgumentException(dirname(__FILE__)."/settings.json does not exist or is unreadable.");
             } else {
                 // Database connection begins
                 $db_envir = $envir->database_env;
