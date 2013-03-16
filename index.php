@@ -1,37 +1,14 @@
 <?php
+session_start();
 
-function autoload($className)
-{
-	$className = ltrim($className, '\\');
-	$fileName = '';
-	$namespace = '';
-	if ($lastNsPos = strripos($className, '\\')) {
-		$namespace = substr($className, 0, $lastNsPos);
-		$className = substr($className, $lastNsPos + 1);
-		$fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-	}
-	$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className).'.php';
-	require strtolower($fileName);
-}
+use MedWave\System\Model as models;
 
-spl_autoload_register('autoload');
+require 'medwave/ekoed/autoloader/autoloader.php';
+$autoloader = new autoloader();
+$autoloader->registerLoader();
 
-$core = new MedWave\Core\System();
-$db = $core->getDbcon();
+$core = new MedWave\Ekoed\Core\System("/", "MedWave");
+$dbClass = new MedWave\Ekoed\Database\DB();
+$dbcon = $dbClass->getDbcon();
+$core->determineRoute($_SERVER['REQUEST_URI']);
 
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title>MedWave | Waves for the Future</title>
-</head>
-<body>
-	<div class="wrapper_content">
-		<header></header>
-		<div class="content">
-			This is just some content to showcase that this is working.
-		</div>
-		<footer></footer>
-	</div>
-</body>
-</html>
