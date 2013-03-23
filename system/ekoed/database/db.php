@@ -20,7 +20,6 @@ namespace Ekoed\Database {
 
         public function __construct()
         {
-            print dirname(__FILE__);
             $fileContents = file_get_contents("system/settings.json");
             $envir = json_decode($fileContents);
             if ($envir == false) {

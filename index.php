@@ -5,11 +5,10 @@ use MedWave\System\Model as models;
 
 require 'system/ekoed/autoloader/autoloader.php';
 $autoloader = new autoloader();
-$autoloader->setSystemDir("system");
 $autoloader->registerLoader();
 
-$core = new Ekoed\Core\System("/", "system");
+$core = new Ekoed\Core\System("MedWave");
 $dbClass = new Ekoed\Database\DB();
 $dbcon = $dbClass->getDbcon();
-$core->determineRoute($_SERVER['REQUEST_URI']);
+require $core->determineRoute($_SERVER['REQUEST_URI']);
 

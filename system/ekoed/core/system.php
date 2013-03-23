@@ -27,10 +27,20 @@ namespace Ekoed\Core {
          * @var String $baseDir 
          * @var String $systemBaseDir
          */
-        public function __construct($baseDir, $systemBaseDir)
+        public function __construct($baseDir)
         {
+            // Sets Base Directory
             $this->setBaseDir($baseDir);
-            $this->setSystemBaseDir($systemBaseDir);
+
+            // Figures out System Directory
+            $base_url = explode(DIRECTORY_SEPARATOR, dirname(__FILE__));
+            $position = array_search('ekoed', $base_url);
+            if ($position == 0) {
+                throw new \RuntimeException("Ekoed folder should not be primary path");
+            } else {
+                $path = array_slice($base_url, 0, $position);
+                $this->setSystemBaseDir(implode(DIRECTORY_SEPARATOR, $path));
+            }
         }
 
         /**
@@ -51,24 +61,27 @@ namespace Ekoed\Core {
                 try {
                     $this->loadController($controller, $destination);
                 } catch (\RuntimeException $e) {
+                    print $e->getMessage();
                     error_log($e);
                 }
             } else {
                 // Since Route is not a controller, attempt to load view
                 $base_url = explode(DIRECTORY_SEPARATOR, $route, 2);
+                var_dump($base_url);
                 $inArray = array_search($this->getBaseDir(), $base_url);
-                if ($inArray !== false)
+                if ($inArray !== false) {
                     unset($base_url[$inArray]);
-                $base_url = array_values($base_url);
+                    $base_url = array_values($base_url);
+                }
                 // Sends index.php view if no path
                 if ($base_url[0] == ""){
-                    return $this->getSystemBaseDir().'/view/index.php';
+                    return $this->getSystemBaseDir().'/medwave/views/index.php';
                 // Sends view based on base_url[0]
-                } elseif (file_exists('ucs/view/'.$base_url[0].'.php') && $base_url[0] != ""){
-                    return $this->getSystemBaseDir().'/view/'.$base_url[0].'.php';
+                } elseif (file_exists($this->getSystemBaseDir().'/medwave/views/'.$base_url[0].'.php') && $base_url[0] != ""){
+                    return $this->getSystemBaseDir().'/medwave/views/'.$base_url[0].'.php';
                 // Sends 404 view otherwise.
                 } else {
-                    return $this->getSystemBaseDir().'/view/404.php';
+                    return $this->getSystemBaseDir().'/medwave/views/404.php';
                 }
             }
         }
@@ -98,24 +111,25 @@ namespace Ekoed\Core {
         \****************************/
 
         /**
-         * Sets base directory for use in Router
-         *
-         * @var String Base Directory
-         * @return this
+         * Gets Base Directory
+         * 
+         * @return Base Directory
          */
-        public function setBaseDir($baseDir)
+        protected function getBaseDir()
         {
-            $this->baseDir = $baseDir;
-            return $this;
+            return $this->baseDir;
         }
 
         /**
-         * Gets base directory for use in Router
+         * Sets Base Directory
+         * 
+         * @var string Base Directory
          * @return Base Directory
          */
-        public function getBaseDir()
+        protected function setBaseDir($baseDir)
         {
-            return $this->baseDir;
+            $this->baseDir = $baseDir;
+            return $this;
         }
 
         /** 
@@ -123,7 +137,7 @@ namespace Ekoed\Core {
          *
          * @return System Base Directory
          */
-        public function getSystemBaseDir()
+        protected function getSystemBaseDir()
         {
             return $this->systemBaseDir;
         }
@@ -134,7 +148,7 @@ namespace Ekoed\Core {
          * @var System Base Directory
          * @return this
          */
-        public function setSystemBaseDir($systemBaseDir)
+        protected function setSystemBaseDir($systemBaseDir)
         {
             $this->systemBaseDir = $systemBaseDir;
             return $this;
