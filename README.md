@@ -20,7 +20,7 @@ MedWave requires a MySQL 5.5 or later.
 Installation
 ------------
 
-To install MedWave it is best to follow the step provided below.
+To install MedWave it is best to follow the step provided below, or for more detailed steps see: [MedWave Installation in-depth][2]
 
 Learn More
 ----------
@@ -43,3 +43,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 [1]: https://github.com/ekoedmedia/MedWave/wiki
+[2]: https://github.com/ekoedmedia/MedWave/wiki/Detailed-Installation
