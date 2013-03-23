@@ -16,7 +16,7 @@ namespace MedWave\Controller {
     use MedWave\Model\Error as ErrorModel;
     use MedWave\Model\Success as SuccessModel;
 
-    class User {
+    class Report {
 
         protected $destination;
         protected $dbHandle;
@@ -45,39 +45,53 @@ namespace MedWave\Controller {
          * if authentication is successful based
          * on variables passed into function.
          */
-        public function authenticate() {
-            $error_1000 = new ErrorModel('Authentication', '1000', 'Username and/or Password left blank.');
-            $error_1001 = new ErrorModel('Authentication', '1001', 'Username and/or Password incorrect or User does not exist.');
-
+        public function generate() {
+            $error_1000 = new ErrorModel('Authentication', '1000', 'some fields are blank left blank.');
+                
+         
             // Checks if post values are set.
-            if (!isset($_POST['user_name']) || !isset($_POST['password'])) {
+            if (!isset($_POST['From']) || !isset($_POST['To']) || !isset($_POST[diagnosis])) {
                 $_SESSION['error'] = serialize($error_1000);
                 header("Location: /".$this->getBaseDir()."/");
             } else {
-                $username = $_POST['user_name'];
-                $password = $_POST['password'];
+                $from = $_POST['From'];
+                $to = $_POST['To'];
+                $diagnosis=$_POST['diagnosis'];
                 // Testing if trimmed input is valid
-                if (trim($username) == "" || trim($password) == "") {
+                if (trim($diagnosis) == "" ) {
                     $_SESSION['error'] = serialize($error_1000);
                     header("Location: /".$this->getBaseDir()."/");
                 } else {
                     // Querying of Database to See if User Exists
-                    $sql = "SELECT * FROM users WHERE user_name=:username AND password=:password"; ##TODO: Change query to join with persons table
+                    $sql = "SELECT p.first_name As nameF, p.last_name As nameL, p.address As address, r.diagnosis As diagnosis
+                            FROM   persons p INNER JOIN radiology_record r         
+                            ON p.user_name = r.patient_name 
+                            WHERE r.diagnosis=:diagnosis AND r.prescribing_date BETWEEN :From AND :To "; 
                     $stmt = $this->dbHandle->prepare($sql);
-                    $stmt->bindParam(':username', $username);
-                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':diagnosis', $diagnosis);
+                    $stmt->bindParam(':From', $from);
+                    $stmt->bindParam(':To',$to);
                     $stmt->execute();
                     // If count is 0, then throw an error
+
                     if ($stmt->rowCount() == 0) {
-                        $_SESSION['error'] = serialize($error_1001);
-                        header("Location: /".$this->getBaseDir()."/");
-                    } else {
+                         $_SESSION['error'] = serialize($error_1001);
+                         header("Location: /".$this->getBaseDir()."/");
+                     } else {
                         // Get the result and head to destination
-                        $result = $stmt->fetch(\PDO::FETCH_LAZY);
-                        $_SESSION['logged'] = true;
-                        $_SESSION['username'] = $result->user_name;
-                        $_SESSION['role'] = $result->class;
-                        header("Location: /".$this->getBaseDir()."/".$this->getDestination());
+                        try{
+                            while($result = $stmt->fetch(\PDO::FETCH_LAZY)){
+                                print "<tr> ";
+                                print  "<td><div>".$result->nameF." ".$result->nameL."</div></td>
+                                <td><div>".$result->address."</div></td>
+                                <td><div>".$result->diagnosis."</div></td>";
+                                print " </tr>";
+
+                            }
+                            }catch(\PDOException $e) {
+                                print $e->getMessage();
+                            }
+                                
                     }
                 }
             }
@@ -100,6 +114,7 @@ namespace MedWave\Controller {
          * they are no longer logged in.
          */
         public function unauthenticate() {
+            print "2";
             session_destroy();
             session_start();
             $success = new SuccessModel('Authentication', 'You were successfully logged out.');
