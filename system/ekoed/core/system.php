@@ -67,7 +67,6 @@ namespace Ekoed\Core {
             } else {
                 // Since Route is not a controller, attempt to load view
                 $base_url = explode(DIRECTORY_SEPARATOR, $route, 2);
-                var_dump($base_url);
                 $inArray = array_search($this->getBaseDir(), $base_url);
                 if ($inArray !== false) {
                     unset($base_url[$inArray]);
@@ -94,12 +93,12 @@ namespace Ekoed\Core {
          */
         protected function loadController($controller, $destination)
         {
-            $controller = 'UCS\Controller\\'.$controller; // Create Namespace for Class
+            $controller = 'MedWave\Controller\\'.$controller; // Create Namespace for Class
             if (!isset($_POST['CMD'])){
                 throw new \RuntimeException("Controller was not able to execute, due to missing Command Token.");
             }
             try {
-                $c = new $controller($_POST['CMD'], $destination, $this->dbHandle);
+                $c = new $controller($_POST['CMD'], $destination, $this->dbHandle, $this->getBaseDir());
             } catch (\InvalidArgumentException $e){
                 return $this->getSystemBaseDir().'/view/404.php';
                 error_log($e);
@@ -115,7 +114,7 @@ namespace Ekoed\Core {
          * 
          * @return Base Directory
          */
-        protected function getBaseDir()
+        public function getBaseDir()
         {
             return $this->baseDir;
         }
@@ -126,7 +125,7 @@ namespace Ekoed\Core {
          * @var string Base Directory
          * @return Base Directory
          */
-        protected function setBaseDir($baseDir)
+        public function setBaseDir($baseDir)
         {
             $this->baseDir = $baseDir;
             return $this;

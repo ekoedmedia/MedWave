@@ -1,14 +1,14 @@
 <?php
 
-/*
- *
+/**
+ * User Model 
  *
  *
  */
 
-namespace MedWave\User {
+namespace MedWave\Model {
 
-	class UserModel {
+	class User {
 
 		protected $user_name;
 		protected $password;

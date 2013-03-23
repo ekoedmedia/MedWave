@@ -1,10 +1,10 @@
 {
 "database_env" : [{
     "type" : "mysql",
-    "user" : "", 
-    "pass" : "",
+    "user" : "root", 
+    "pass" : "root",
     "host" : "localhost",
-    "port" : "", 
-    "name" : "" 
+    "port" : "8889", 
+    "name" : "medwave" 
     }]
 }

@@ -29,6 +29,7 @@ namespace Ekoed\Database {
                 foreach ($db_envir AS $envir) {
                     $db_string = ORM\Connector::create_connection_string($envir->type,
                                                                          $envir->name,
+                                                                         $envir->user,
                                                                          $envir->pass,
                                                                          $envir->host,
                                                                          $envir->port);
