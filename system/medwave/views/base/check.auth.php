@@ -7,4 +7,7 @@ if (!isset($_SESSION['logged']) || $_SESSION['logged'] != true) {
 	$error = new MedWave\Model\Error('Authentication', '1002', 'You are not authenticated.');
 	$_SESSION['error'] = serialize($error);
 	header("Location: /".$baseDir."/");
+} else {
+	$username = $_SESSION['username'];
+	$role = $_SESSION['role'];
 }

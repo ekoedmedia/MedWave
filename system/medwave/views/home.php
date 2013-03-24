@@ -1,7 +1,19 @@
 <?php include "base/check.auth.php"; ?>
 <?php 
-	// Include file here under directory: 
-	// home/ for PHP processing. We will try to keep it as clean as possible. 
+	switch ($role) {
+		case 'p':
+			$fileToInclude = "home/patient.php";
+			break;
+		case 'd':
+			$fileToInclude = "home/doctor.php";
+			break;
+		case 'r':
+			$fileToInclude = "home/radiologist.php";
+			break;
+		case 'a':
+			$fileToInclude = "home/admin.php";
+			break;
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,7 +26,7 @@
 		<?php include 'base/auth.header.php'; ?>
 	</header>
 	<div class="content">
-		
+	    <?php include $fileToInclude; ?>	
 	</div>
 	<footer class="footer">
 		<?php include 'base/auth.footer.php'; ?>

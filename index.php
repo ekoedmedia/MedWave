@@ -12,7 +12,7 @@ $dbClass = new Ekoed\Database\DB();
 $dbcon = $dbClass->getDbcon("medwave");
 $core->setDbHandle($dbcon);
 $path = $core->determineRoute($_SERVER['REQUEST_URI']);
-// var_dump($path);  ## Debugging to see what View is currently loaded
+//var_dump($path);  ## Debugging to see what View is currently loaded
 if ($path)
 	require $path;
 
