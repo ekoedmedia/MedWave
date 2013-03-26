@@ -1,0 +1,56 @@
+#!/usr/bin/env php
+<?php
+// Console based off:
+// http://www.kavoir.com/2009/04/php-read-from-keyboard-get-user-input-from-keyboard-console-by-typing.html
+// Modified to fit needs
+
+require 'ekoed/autoloader/autoloader.php';
+$autoloader = new autoloader();
+$autoloader->registerLoader();
+
+$directory = ltrim(dirname($_SERVER['PHP_SELF']), DIRECTORY_SEPARATOR);
+
+// Include Core
+$core = new Ekoed\Core\System($directory);
+
+// Connect To DB
+$dbClass = new Ekoed\Database\DB();
+$dbcon = $dbClass->getDbcon("medwave");
+$core->setDbHandle($dbcon);
+
+$colors = new Ekoed\Console\Colors();
+
+// Available Commands
+$availableCommands = array("user:create - ".$colors->colorString("Create User Account on MedWave", 'red', null),
+						   "user:update - ".$colors->colorString("Update User Account on MedWave", 'red', null),
+						   "user:remove - ".$colors->colorString("Remove User Account from MedWave", 'red', null),
+						   "install - ".$colors->colorString("Install MedWave", 'red', null),
+						   "exit - ".$colors->colorString("Exit the console", 'red', null));
+$commands = implode("\n", $availableCommands);
+
+print $colors->colorString("The following commands are available to execute:\n\n", 'white', null);
+print $commands;
+print "\n\n";
+
+$fp = fopen('php://stdin', 'r');
+$last_line = false;
+$message = '';
+while (!$last_line) {
+	$next_line = fgets($fp, 1024);
+	$console = new MedWave\Controller\Console($dbcon, $fp, $colors);
+	switch ($next_line) {
+		case "user:create\n":
+			$console->createUser();
+			break;
+		case "user:update\n":
+			break;
+		case "user:remove\n":
+			break;
+		case "install\n":
+			$console->installDatabase();
+			break;
+		case "exit\n":
+			$last_line = true;
+			break;
+	}
+}
