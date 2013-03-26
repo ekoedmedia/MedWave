@@ -62,7 +62,7 @@ namespace MedWave\Controller {
             $diagnosis=$_POST["diagnosis"];
             $description=$_POST["description"];
             //$upload=$_POST["upload"];
-            print "1";
+            
                 // Testing if trimmed input is valid
                 if (trim($record_id == "") ) {
                     $_SESSION['error'] = serialize($error_3000);
@@ -93,13 +93,26 @@ namespace MedWave\Controller {
                      var_dump($_FILES);
                      print "<br>";
                      // die();
-
-
-                    $result = count($_FILES["uploadedfile"]["name"]);
+                    $result = count($_FILES["uploadedfile"]["name"])-1;
                     for($result;$result>=0;$result--){
-
-                        print $_FILES["uploadedfile"]["tmp_name"][$result].$_FILES["uploadedfile"]["name"][$result];
-
+                        print "<br>";
+                        print "filenumber".$result;
+                        print "<br>";
+                        print $_FILES["uploadedfile"]["tmp_name"][$result]."    ".$_FILES["uploadedfile"]["name"][$result];
+                         //values(12,1,null,null,null)
+                        $sql="INSERT INTO pacs_images(record_id,image_id,thumbnail,regular_size,full_size) 
+                        values(:record_id,:record_id,:regular_size,:regular_size,:regular_size)";
+                        $img =addslashes (file_get_contents($_FILES["uploadedfile"]["tmp_name"][$result]));
+                        $stmt = $this->dbHandle->prepare($sql);
+                        $stmt->bindParam(':record_id',$record_id);
+                        $stmt->bindParam(':regular_size',$img);
+                        print $record_id;
+                        try {
+                            $stmt->execute();
+                        } catch (\Exception $e) {
+                                print $e->getMessage();
+                        }
+ 
                     }
 
 
