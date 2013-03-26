@@ -6,7 +6,7 @@
 	</head>
 
 	<body>
-		<form action="?c=upload&d=home" method="post">
+		<form action="./?c=upload&d=home" method="post" enctype="multipart/form-data" action="uploade.php" method="POST">
 			Record ID: <input type="text" name="record_id" value=""><br>
 			Patient Name: <input type="text" name="patient" value=""><br>
 			Doctor Name: <input type="text" name="doctor_name" value=""><br>
@@ -17,7 +17,10 @@
 			Diagnosis: <input type="text" name="diagnosis" value=""><br>
 			Description: <input type="text" name="description" value=""><br>
 			<input type="hidden" name="CMD" value="upload">
-			<input type="submit" value="submit record">
+						
+			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000000" >
+			Choose a file to upload: <input name="uploadedfile[]" type="file" multiple="multiple" /><br />
+				<input type="submit" value="submit record">
 		</form>
 	</body>
 
