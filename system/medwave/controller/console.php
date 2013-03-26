@@ -66,6 +66,26 @@ namespace MedWave\Controller {
 
 
         /**
+         * Prompts for Username, then removes the user with that name.
+         */
+        public function removeUser()
+        {
+            print "\n";
+            print $this->colors->colorString("Username to Delete: ", 'white', null);
+            $name = $this->promptNameForDelete(); // Prompts for Username
+
+            // SQL
+            $sql = "DELETE FROM users WHERE user_name=:name";
+            $stmt = $this->dbHandle->prepare($sql);
+            $stmt->bindParam(':name', $name);
+            $stmt->execute();
+
+            print "\nSuccessfully removed user.\n";
+            exit(0);
+        }
+
+
+        /**
          * Installs database from SQL file
          */
         public function installDatabase()
@@ -100,7 +120,6 @@ namespace MedWave\Controller {
         \******************************/
 
 
-        ##TODO: Put in checks for User accounts with that nane
         /**
          * Prompts user for username
          * @return string Name
@@ -111,6 +130,9 @@ namespace MedWave\Controller {
                 $name = fgets($this->fp, 1024);
                 // Remove newline and check length
                 $name = str_replace(array("\r", "\r\n", "\n"), '', $name);    
+                $stmt = $this->dbHandle->prepare("SELECT * FROM users WHERE user_name=:name");
+                $stmt->bindParam(':name', $name);
+                $stmt->execute();
                 if (strlen($name) > 24 || strlen($name) == 0){
                     $name = null;
                     print $this->colors->colorString("Error: User Name must be maximum 24 characters long.", 'black', 'red');
@@ -118,6 +140,33 @@ namespace MedWave\Controller {
                 } elseif (!preg_match('/^[a-z0-9_-]{3,24}$/i', $name)) {
                     $name = null;
                     print $this->colors->colorString("Error: User Name must contain Alphanumeric characters and underscores only.", 'black', 'red');
+                    print $this->colors->colorString("\nTry Again: ", 'white', null);
+                } elseif ($stmt->rowCount() == 1) {
+                    $name = null;
+                    print $this->colors->colorString("Error: User Name already exists.", 'black', 'red');
+                    print $this->colors->colorString("\nTry Again: ", 'white', null);
+                }
+            }
+            return $name;
+        }
+
+
+        /**
+         * Prompts user for username for Deleting
+         * @return string Name
+         */
+        private function promptNameForDelete()
+        {
+            while (empty($name)) {
+                $name = fgets($this->fp, 1024);
+                // Remove newline and check length
+                $name = str_replace(array("\r", "\r\n", "\n"), '', $name);    
+                $stmt = $this->dbHandle->prepare("SELECT * FROM users WHERE user_name=:name");
+                $stmt->bindParam(':name', $name);
+                $stmt->execute();
+                if ($stmt->rowCount() == 0) {
+                    $name = null;
+                    print $this->colors->colorString("Error: User Name does not exist.", 'black', 'red');
                     print $this->colors->colorString("\nTry Again: ", 'white', null);
                 }
             }
