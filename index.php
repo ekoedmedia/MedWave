@@ -7,7 +7,9 @@ require 'system/ekoed/autoloader/autoloader.php';
 $autoloader = new autoloader();
 $autoloader->registerLoader();
 
-$core = new Ekoed\Core\System("MedWave");
+$directory = ltrim(dirname($_SERVER['PHP_SELF']), DIRECTORY_SEPARATOR);
+
+$core = new Ekoed\Core\System($directory);
 $dbClass = new Ekoed\Database\DB();
 $dbcon = $dbClass->getDbcon("medwave");
 $core->setDbHandle($dbcon);
