@@ -190,6 +190,30 @@ namespace MedWave\Controller {
             }
         }
 
+
+        /**
+         * Removes user from account list
+         */
+        public function removeUser()
+        {
+            $this->authCheck(); // Check if Authenticated
+            $error_6000 = new ErrorModel('RemoveUser', '6000', 'User not valid.');
+            $success = new SuccessModel('RemoveUser', 'Successfully removed the user: '.$_POST['user']);
+
+            // Checks if is valid, and is not current user
+            if (!isset($_POST['user']) || $_POST['user'] == "" || $_POST['user'] == $_SESSION['username']){
+                $_SESSION['error'] = serialize($error_6000);
+                header("Location: /".$this->getBaseDir()."/users");
+            } else {
+                $sql = "DELETE FROM users WHERE user_name=:name";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(":name" => $_POST['user']));
+
+                $_SESSION['success'] = serialize($success);
+                header('Location: /'.$this->getBaseDir().'/'.$this->getDestination());
+            }
+        }
+
         /**
          * Destroys User session so that
          * they are no longer logged in.
@@ -200,10 +224,15 @@ namespace MedWave\Controller {
             session_start();
             $success = new SuccessModel('Authentication', 'You were successfully logged out.');
             $_SESSION['success'] = serialize($success);
-            header("Location: /".$this->getBaseDir()."/");
+            header("Location: /".$this->getBaseDir());
         }
 
 
+        /**
+         * Makes sure user is logged in
+         * if they are not it redirects the user
+         * to the sites base directory.
+         */
         private function authCheck()
         {
             if (!isset($_SESSION['logged']) || $_SESSION['logged'] != true) {
@@ -212,7 +241,7 @@ namespace MedWave\Controller {
                 $baseDir = $core->getBaseDir();
                 $error = new ErrorModel('Authentication', '1002', 'You are not authenticated.');
                 $_SESSION['error'] = serialize($error);
-                header("Location: /".$baseDir."/");
+                header("Location: /".$baseDir);
             }
         }
 

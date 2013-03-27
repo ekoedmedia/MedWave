@@ -16,6 +16,8 @@
 			<?php include "base/form.error.php"; ?>
 	    	<form action="./?c=user&d=account" method="POST">
 	    		<?php 
+	    			## TODO: Separate this into a file to make things look nicers, 
+	    			##		 only print statements and includes should be in template files.
 	    			$sql = "SELECT * FROM persons WHERE user_name=:name";
 	    			$stmt = $dbcon->prepare($sql);
 	    			$stmt->execute(array(":name" => $_SESSION['username']));
