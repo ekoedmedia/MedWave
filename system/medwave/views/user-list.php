@@ -1,4 +1,4 @@
-<?php include "base/check.auth.php"; ?>
+<?php include "_base/check.auth.php"; ?>
 <?php 
 	switch ($role) {
 		case 'p':
@@ -18,20 +18,20 @@
 </head>
 <body>
 	<header class="header">
-		<?php include 'base/auth.header.php'; ?>
+		<?php include '_base/auth.header.php'; ?>
 	</header>
 	<div class="content">
 	    <div class="content-wrapper">
 	    	<div class="content-header">
-	    		<a href="./add-user" class="btn">Add User</a>
+	    		<a href="./user-add" class="btn">Add User</a>
 	    	</div>
 	    	<div class="users">
-	    		<?php include "users/user.list.php"; ?>
+	    		<?php include "_users/list.php"; ?>
 	    	</div>
 	    </div>
 	</div>
 	<footer class="footer">
-		<?php include 'base/auth.footer.php'; ?>
+		<?php include '_base/auth.footer.php'; ?>
 	</footer>
 </body>
 </html>

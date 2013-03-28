@@ -1,17 +1,17 @@
-<?php include "base/check.auth.php"; ?>
+<?php include "_base/check.auth.php"; ?>
 <?php 
 	switch ($role) {
 		case 'p':
-			$fileToInclude = "home/patient.php";
+			$fileToInclude = "_home/patient.php";
 			break;
 		case 'd':
-			$fileToInclude = "home/doctor.php";
+			$fileToInclude = "_home/doctor.php";
 			break;
 		case 'r':
-			$fileToInclude = "home/radiologist.php";
+			$fileToInclude = "_home/radiologist.php";
 			break;
 		case 'a':
-			$fileToInclude = "home/admin.php";
+			$fileToInclude = "_home/admin.php";
 			break;
 	}
 ?>
@@ -23,13 +23,13 @@
 </head>
 <body>
 	<header class="header">
-		<?php include 'base/auth.header.php'; ?>
+		<?php include '_base/auth.header.php'; ?>
 	</header>
 	<div class="content">
 	    <?php include $fileToInclude; ?>	
 	</div>
 	<footer class="footer">
-		<?php include 'base/auth.footer.php'; ?>
+		<?php include '_base/auth.footer.php'; ?>
 	</footer>
 </body>
 </html>

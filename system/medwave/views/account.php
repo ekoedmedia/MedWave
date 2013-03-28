@@ -1,4 +1,4 @@
-<?php include "base/check.auth.php"; ?>
+<?php include "_base/check.auth.php"; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,13 +7,13 @@
 </head>
 <body>
 	<header class="header">
-		<?php include 'base/auth.header.php'; ?>
+		<?php include '_base/auth.header.php'; ?>
 	</header>
 	<div class="content">
 	    <div class="content-wrapper">
 	    	<h3>Update Information</h3>
-	    	<?php include "base/form.success.php"; ?>
-			<?php include "base/form.error.php"; ?>
+	    	<?php include "_base/form.success.php"; ?>
+			<?php include "_base/form.error.php"; ?>
 	    	<form action="./?c=user&d=account" method="POST">
 	    		<?php 
 	    			## TODO: Separate this into a file to make things look nicers, 
@@ -76,7 +76,7 @@
 	    </div>	
 	</div>
 	<footer class="footer">
-		<?php include 'base/auth.footer.php'; ?>
+		<?php include '_base/auth.footer.php'; ?>
 	</footer>
 </body>
 </html>
