@@ -8,33 +8,62 @@ $sql = "SELECT u.user_name AS username, p.first_name AS fname, p.last_name AS ln
 $stmt = $dbcon->prepare($sql);
 $stmt->execute();
 ?>
-<table>
+
+<table border="1" id="userTable">
 	<tr>
 		<th>Username</th><th>First Name</th><th>Last Name</th><th>Role</th><th>Controls</th>
 	</tr>
 	<?php 
 		while ($result = $stmt->fetch(\PDO::FETCH_LAZY)) {
+            
 			print "<tr>";
-				print "<td>".$result->username."</td>";
-				print "<td>".$result->fname."</td>";
-				print "<td>".$result->lname."</td>";
+				print "<td><div contenteditable>".$result->username."</div></td>";
+				print "<td><div contenteditable>".$result->fname."</div></td>";
+				print "<td><div contenteditable>".$result->lname."</div></td>";
+				$selected0="";
+				$selected1="";
+				$selected2="";
+				$selected3="";
 				switch ($result->role) {
 					case 'a':
+						$selected0="Selected";
 						$role = "Admin";
 						break;
 					case 'd':
+						$selected1="Selected";
 						$role = "Doctor";
 						break;
 					case 'p':
+						$selected2="Selected";
 						$role = "Patient";
 						break;
 					case 'r':
+						$selected3="Selected";
 						$role = "Radiologist";
 						break;
 				}
-				print "<td>".$role."</td>";
+
+				print "<td><select id=role-dropdown>
+							<option ".$selected0.">Admin</option>
+							<option ".$selected1." >Doctor</option>
+							<option ".$selected2." >Patient</option>
+							<option ".$selected3." >Radiologist</option>
+						</select></td>";
+
 				print "<td class=\"user-management-controls\">
-					      <a href=\"update-user?user=".$result->username."\"><img src=\"media/img/update-icon.png\" alt=\"Update User\"></a><form method=\"post\" action=\"./?c=user&d=users\" onsubmit=\"return window.confirm('Are you sure you want to delete the user: ".$result->username." ?');\" class=\"delete-user-form\">
+					   
+					   	<form method=\"post\" 
+					      onsubmit=\"GetCellValues()\" class=\"update-user-form\">
+					      
+					          <input type=\"submit\" class=\"update-user-icon\" value=\"\">
+					          <input type=\"hidden\" name=\"user\" value=\"".$result->username."\">
+					          <input type=\"hidden\" name=\"CMD\" value=\"updateUser\">
+					      </form>
+					    
+					      <form method=\"post\" action=\"./?c=user&d=users\" 
+					      onsubmit=\"return window.confirm('Are you sure you want to delete the user: ".$result->username." ?');
+					      \" class=\"delete-user-form\">
+					      
 					          <input type=\"submit\" class=\"delete-user-icon\" value=\"\">
 					          <input type=\"hidden\" name=\"user\" value=\"".$result->username."\">
 					          <input type=\"hidden\" name=\"CMD\" value=\"removeUser\">
@@ -43,5 +72,26 @@ $stmt->execute();
 			print "</tr>";
 		}
 	?>
-</table>
+</table>		
+					<script type="text/javascript">
+				    function GetCellValues() {
+				        var table = document.getElementById('usertable');
+				        for (var r = 0, n = table.rows.length; r < n; r++) {
+				        	print "asd";
+				        	die();
+				                alert(table.rows[r].cells[c].innerHTML);
+				        }
+				    }
+					function setContents();
+					{
+					document.getElementById("role-dropdown").selectedIndex=$rIndex;
+					
+					}
+
+					function getContents();
+					{
+					var x=document.getElementById("role-dropdown").selectedIndex;
+					
+					}
+				</script>
 <?php ##TODO: PUT IN PAGINATION LINKS ?>

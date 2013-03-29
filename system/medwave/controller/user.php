@@ -7,7 +7,7 @@
  User Controller
  Provides Authentication,
  User Updating, and User
- Creation.
+ Creation and removal
 \****************************/
 
 namespace MedWave\Controller {
@@ -87,6 +87,10 @@ namespace MedWave\Controller {
         /**
          * Takes user input and stores it into the database.
          */
+        public function updateUser() 
+        {
+            
+        }
         public function updatePerson() 
         {
             $this->authCheck(); // Check if authenticated

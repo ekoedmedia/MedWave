@@ -141,7 +141,7 @@ namespace MedWave\Controller {
          * they are no longer logged in.
          */
         public function unauthenticate() {
-            print "2";
+//            print "2";
             session_destroy();
             session_start();
             $success = new SuccessModel('Authentication', 'You were successfully logged out.');

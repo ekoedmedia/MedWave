@@ -15,8 +15,9 @@
 <head>
 	<title>User Management</title>
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
+
 </head>
-<body background="love-pain-trauma.jpg">
+<body >
 	<header class="header">
 		<?php include '_base/auth.header.php'; ?>
 	</header>
@@ -33,6 +34,8 @@
 	<footer class="footer">
 		<?php include '_base/auth.footer.php'; ?>
 	</footer>
+
 </body>
+
 </html>
 
