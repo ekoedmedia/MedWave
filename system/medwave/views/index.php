@@ -20,8 +20,8 @@
 			</p>
 		</div>
 		<div class="form--login">
-			<?php include "base/form.success.php"; ?>
-			<?php include "base/form.error.php"; ?>
+			<?php include "_base/form.success.php"; ?>
+			<?php include "_base/form.error.php"; ?>
 			<form action="?c=user&d=home" method="POST">
 				<label for="username">Username</label> <input type="text" name="user_name" id="username"><br>
 				<label for="password">Password</label> <input type="password" name="password" id="password"><br>

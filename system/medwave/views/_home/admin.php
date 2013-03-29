@@ -8,7 +8,7 @@
 		</div>
 		<ul class="content__nav">
 			<li><a href="./report-gen">Report Generating</a></li>
-			<li><a href="./users">Manage Users</a></li>
+			<li><a href="./user-list">Manage Users</a></li>
 			<li><a href="./analysis">Data Analysis</a></li>
 		</ul>
 	</div>

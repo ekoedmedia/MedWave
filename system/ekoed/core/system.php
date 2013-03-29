@@ -76,7 +76,7 @@ namespace Ekoed\Core {
                 if ($base_url[0] == ""){
                     return $this->getSystemBaseDir().'/medwave/views/index.php';
                 // Sends view based on base_url[0]
-                } elseif (file_exists($this->getSystemBaseDir().'/medwave/views/'.$base_url[0].'.php') && $base_url[0] != ""){
+                } elseif (file_exists($this->getSystemBaseDir().'/medwave/views/'.$base_url[0].'.php') && $base_url[0] != "" && substr($base_url[0], 0, 1) != '_'){
                     return $this->getSystemBaseDir().'/medwave/views/'.$base_url[0].'.php';
                 // Sends 404 view otherwise.
                 } else {

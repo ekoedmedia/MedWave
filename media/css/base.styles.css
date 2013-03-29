@@ -9,6 +9,9 @@
  stylesheets.
 \******************************/
 
-body { 
+body { }
 
-	 }
+.user-management-controls img, .user-management-controls input { border:1px solid #CCC; background-color:#F9F9F9; border-radius:5px; }
+.user-management-controls img { margin-right:5px; }
+.delete-user-form { display:inline-block; vertical-align:top; }
+.delete-user-icon { background-image:url('../img/delete-icon.png'); border:none; width:34px; background-repeat:no-repeat; background-color:transparent; height:34px; cursor:pointer; }
