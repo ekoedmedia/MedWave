@@ -1,4 +1,4 @@
-<div class=footer-wrapper">
+<div class="footer-wrapper">
     <div class="footer">
 		<div class="footer__center">
 			<div class="footer__nav">
