@@ -16,7 +16,7 @@
 	<title>User Management</title>
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body background="love-pain-trauma.jpg">
 	<header class="header">
 		<?php include 'base/auth.header.php'; ?>
 	</header>
