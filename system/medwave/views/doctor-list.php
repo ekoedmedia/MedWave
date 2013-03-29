@@ -28,7 +28,7 @@
 
             </div>
             <div class="users">
-                <?php include "_users/list.php"; ?>
+                <?php include "_doctors/list.php"; ?>
             </div>
         </div>
     </div>
@@ -44,8 +44,6 @@
     </footer>
 <script>
     function changeTable(){
-        var tableType=document.getElementById("tableType");
-        var ttype=tableType.options[tableType.selectedIndex].value;
         var xmlhttp;
         xmlhttp=new XMLHttpRequest();
         xmlhttp.onreadystatechange=function(){
@@ -53,19 +51,22 @@
                 document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
             }
         }
-        if (ttype=="persons"){
+        var tableType=document.getElementById("tableType");
+        var type=tableType.options[tableType.selectedIndex].value;
+        if (type=="persons"){
             xmlhttp.open("POST","persons.php",true);
-         
+            xmlhttp.setRequestHeader("Content-type","ndt");
+            xmlhttp.send("./?c=persons&d="); 
+       }
+        if (type=="users"){
+            xmlhttp.open("POST","persons.php",true);
+            xmlhttp.setequestHeader("Content-type","ndt");
             xmlhttp.send(""); 
        }
-        if (ttype=="users"){
-            xmlhttp.open("POST","persons.php",true);
-            xmlhttp.send(""); 
-       }
-        if (ttype=="Doctors"){
-
-            xmlhttp.open("POST","doctor-list.php",true);            
-            //xmlhttp.send("?CMD=updateUser&name="+document.getElementById("nameInput").value+"&lastName="+document.getElementById("lastNameInput").value); 
+        if (type=="family_doctor"){
+            xmlhttp.open("POST",".php",true);
+            xmlhttp.setRequestHeader("Content-type","ndt");
+            xmlhttp.send("?CMD=updateUser&name="+document.getElementById("nameInput").value+"&lastName="+document.getElementById("lastNameInput").value); 
        }
     }
 </script>

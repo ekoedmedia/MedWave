@@ -75,7 +75,6 @@ $stmt->execute();
 		$rowNum++;
 		}
 	?>
-	<p id="demo">My First Paragraph.</p>
 
 <script>
 function wat(r){
