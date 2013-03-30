@@ -32,9 +32,8 @@
             </div>
             <div class="tableChange">
                 <select id="tableType" width="1000"  STYLE="width: 200px" onchange="changeTable();">
-                        <option value="users">Users</option>
-                        <option value="patients">Patients</option>
-                        <option value="doctors">Doctors</option>
+                        <option value="users">Users and Persons</option>
+                        <option value="doctors">Doctors and Patients</option>
                 </select>   
             </div>
         </div>
