@@ -18,9 +18,12 @@ namespace Ekoed\Database {
         
         protected $dbcon;
 
-        public function __construct()
+        public function __construct($settingsPath = null)
         {
-            $fileContents = file_get_contents("system/settings.json");
+            if (is_null($settingsPath))
+                $fileContents = file_get_contents("system/settings.json");
+            else 
+                $fileContents = file_get_contents($settingsPath);
             $envir = json_decode($fileContents);
             if ($envir == false) {
                 throw new \InvalidArgumentException("system/settings.json does not exist or is uneadable.");

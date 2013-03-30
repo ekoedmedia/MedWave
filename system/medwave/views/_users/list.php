@@ -1,4 +1,8 @@
 <?php
+
+if (isset($_GET['ajax']))
+	include "../../../system.php";
+
 if (isset($_GET['p']) && is_numeric($_GET['p'])) {
 	$page = $_GET['p'];
 } else{
@@ -78,18 +82,13 @@ $stmt->execute();
 
 <script>
 function wat(r){
-						var userName = document.getElementById("userName"+r);					
-						var fName = document.getElementById("fName"+r);
-						var lName = document.getElementById("lName"+r);
-						var role = document.getElementById("role-dropdown"+r);
-						allvars=userName.innerHTML+" "+fName.innerHTML+" "+lName.innerHTML+" "+role.options[role.selectedIndex].value;
-						alert(allvars);
-				
-
-}				        
-
-
-
+	var userName = document.getElementById("userName"+r);					
+	var fName = document.getElementById("fName"+r);
+	var lName = document.getElementById("lName"+r);
+	var role = document.getElementById("role-dropdown"+r);
+	allvars=userName.innerHTML+" "+fName.innerHTML+" "+lName.innerHTML+" "+role.options[role.selectedIndex].value;
+	alert(allvars);
+}
 </script>
 
 </table>		
