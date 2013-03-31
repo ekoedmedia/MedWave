@@ -4,7 +4,7 @@ $user = $_SESSION['username'];
 $patients = "<option selected=\"selected\"></option>";
 $doctors = "<option selected=\"selected\"></option>";
 
-$sql = "SELECT p.first_name AS fname, p.last_name AS lname, p.user_name AS username FROM persons p INNER JOIN users u ON u.user_name=p.user_name WHERE u.class='p'";
+$sql = "SELECT p.first_name AS fname, p.last_name AS lname, u.user_name AS username FROM persons p RIGHT JOIN users u ON u.user_name=p.user_name WHERE u.class='p'";
 foreach ($dbcon->query($sql) AS $row) {
 	if ($row['fname'] == "" || $row['lname'] == "")
 		$patients .= "<option value=\"".$row['username']."\">".$row['username']."</option>";
@@ -12,7 +12,7 @@ foreach ($dbcon->query($sql) AS $row) {
 		$patients .= "<option value=\"".$row['username']."\">".$row['fname']." ".$row['lname']."</option>";
 }
 
-$sql = "SELECT p.first_name AS fname, p.last_name AS lname, p.user_name AS username FROM persons p INNER JOIN users u ON u.user_name=p.user_name WHERE u.class='d'";
+$sql = "SELECT p.first_name AS fname, p.last_name AS lname, u.user_name AS username FROM persons p RIGHT JOIN users u ON u.user_name=p.user_name WHERE u.class='d'";
 foreach ($dbcon->query($sql) AS $row) {
 	if ($row['fname'] == "" || $row['lname'] == "")
 		$doctors .= "<option value=\"".$row['username']."\">".$row['username']."</option>";
@@ -20,10 +20,10 @@ foreach ($dbcon->query($sql) AS $row) {
 		$doctors .= "<option value=\"".$row['username']."\">".$row['fname']." ".$row['lname']."</option>";
 }
 
-$sql = "SELECT p.first_name, p.last_name, p.user_name FROM persons p INNER JOIN users u ON u.user_name=p.user_name WHERE u.user_name=:user";
+$sql = "SELECT p.first_name, p.last_name, u.user_name FROM persons p RIGHT JOIN users u ON u.user_name=p.user_name WHERE u.user_name=:user";
 $stmt = $dbcon->prepare($sql);
 $stmt->execute(array(":user" => $user));
-$radiologist = $stmt->fetch();
+$radiologist = $stmt->fetch(\PDO::FETCH_LAZY);
 
 
 ?>
