@@ -24,7 +24,9 @@ $stmt->execute();
         while ($result = $stmt->fetch(\PDO::FETCH_LAZY)) {
               print "<tr id=".$rowNum.">";
                 print "<td><div id=\"doctor-name".$rowNum."\" contenteditable>".$result->doctor_name."</div></td>";
-                print "<td><div id=\"patient-name".$rowNum."\"contenteditable>".$result->patient_name."</div></td>";              
+                print "<td><div id=\"patient-name".$rowNum."\"contenteditable>".$result->patient_name."</div>";              
+                print "<div id=\"old-patient-name".$rowNum."\" style=\"display:none;\">".$result->patient_name."</div></td>";              
+
                 print "<td class=\"user-management-controls\">
                       <div class=\"update-doctor-form\">                        
                             <input type=\"button\" class=\"update-user-icon\" onclick=\"familyDoctorUpdate(".$rowNum.");\">
@@ -47,20 +49,14 @@ $stmt->execute();
 <script type="text/javascript" src="media/js/jquery.min.js"></script>
 <script>
 function familyDoctorUpdate(r){
-      var dName = document.getElementById("doctor-name"+r);
-      var pName= document.getElementById("patient-name"+r);    
-      var request = $.ajax({
-        url:"./?c=user",
-        type:"POST",
-        data: {CMD: "updateDoctor",doctor:dName,patient:pName}
-      });
-      request.done(function(msg){
-        console.log(msg);
-      });
-      request.fail(function(jqXHR, textStatus) {
-        console.log("Request Failed: "+textStatus);
-      });
-      return false;
+      var dName = document.getElementById("doctor-name"+r).innerHTML;
+      var pName= document.getElementById("patient-name"+r).innerHTML;    
+      var opName= document.getElementById("old-patient-name"+r).innerHTML;    
+
+      $.post("./?c=user",{CMD: "updateDoctor",doctor:dName,patient:pName,oldpatient:opName}
+      );
+
+      
 }
 </script>        
 <?php ##TODO: PUT IN PAGINATION LINKS ?>

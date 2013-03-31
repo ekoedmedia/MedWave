@@ -88,13 +88,12 @@ namespace MedWave\Controller {
 
         public function updateDoctor() 
         {
-            $username = $_POST['old-patient'];
-            $username = $_POST['doctor'];
-            $username = $_POST['patient'];
-                $sql = "UPDATE family_doctor SET patient_name=:patient WHERE doctor_name=:doctor AND patient_name=:old-patient";
+           
+                $sql = "UPDATE family_doctor SET patient_name=:patient WHERE doctor_name=:doctor AND patient_name=:oldpatient";
                 $stmt = $this->dbHandle->prepare($sql);
                 $stmt->execute(array(":patient" => $_POST['patient'],":doctor" => $_POST['doctor'],
-                    ":old-patient" => $_POST['old-patient']));
+                    ":oldpatient" => $_POST['oldpatient']));
+
         }
         /**
          * Takes user input and stores it into the database.
@@ -102,7 +101,6 @@ namespace MedWave\Controller {
  
         public function updateUser() 
         {
-            
         }
         public function updatePerson() 
         {
