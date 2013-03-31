@@ -28,7 +28,7 @@
 
             </div>
             <div class="users" id="user-list">
-                <?php include "_users/user.list.php"; ?>
+                <?php include "_users/doctors.list.php"; ?>
             </div>
             <div class="tableChange">
                 <select id="tableType" width="1000"  STYLE="width: 200px" onchange="changeTable();">

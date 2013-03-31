@@ -8,6 +8,8 @@
  Provides Authentication,
  User Updating, and User
  Creation and removal
+
+ doctor removal
 \****************************/
 
 namespace MedWave\Controller {
@@ -84,9 +86,20 @@ namespace MedWave\Controller {
             }
         }
 
+        public function updateDoctor() 
+        {
+            $username = $_POST['old-patient'];
+            $username = $_POST['doctor'];
+            $username = $_POST['patient'];
+                $sql = "UPDATE family_doctor SET patient_name=:patient WHERE doctor_name=:doctor AND patient_name=:old-patient";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(":patient" => $_POST['patient'],":doctor" => $_POST['doctor'],
+                    ":old-patient" => $_POST['old-patient']));
+        }
         /**
          * Takes user input and stores it into the database.
          */
+ 
         public function updateUser() 
         {
             

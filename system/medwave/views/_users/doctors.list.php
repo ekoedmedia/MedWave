@@ -26,12 +26,9 @@ $stmt->execute();
                 print "<td><div id=\"doctor-name".$rowNum."\" contenteditable>".$result->doctor_name."</div></td>";
                 print "<td><div id=\"patient-name".$rowNum."\"contenteditable>".$result->patient_name."</div></td>";              
                 print "<td class=\"user-management-controls\">
-                      <form method=\"post\" id=\"updateDoctor\"
-                        onsubmit=\"familyDoctorUpdate(".$rowNum.")\" class=\"update-doctor-form\">                        
-                            <input type=\"submit\" class=\"update-user-icon\" value=\"\">
-                            <input type=\"hidden\" name=\"user\" value=\"".$result->doctor_name."\">
-                            <input type=\"hidden\" name=\"CMD\" value=\"updateDoctor\">
-                        </form>
+                      <div class=\"update-doctor-form\">                        
+                            <input type=\"button\" class=\"update-user-icon\" onclick=\"familyDoctorUpdate(".$rowNum.");\">
+                        </div>
                       
                         <form method=\"post\" action=\"./?c=user&d=users\" 
                         onsubmit=\"return window.confirm('Are you sure you want to delete entry for doctor: ".$result->doctor_name." ?');
@@ -47,12 +44,23 @@ $stmt->execute();
         }
     ?>
 </table>
+<script type="text/javascript" src="media/js/jquery.min.js"></script>
 <script>
 function familyDoctorUpdate(r){
       var dName = document.getElementById("doctor-name"+r);
       var pName= document.getElementById("patient-name"+r);    
-      allvars=dName.innerHTML+" "+pName.innerHTML;
-      alert(allvars);
+      var request = $.ajax({
+        url:"./?c=user",
+        type:"POST",
+        data: {CMD: "updateDoctor",doctor:dName,patient:pName}
+      });
+      request.done(function(msg){
+        console.log(msg);
+      });
+      request.fail(function(jqXHR, textStatus) {
+        console.log("Request Failed: "+textStatus);
+      });
+      return false;
 }
 </script>        
 <?php ##TODO: PUT IN PAGINATION LINKS ?>
