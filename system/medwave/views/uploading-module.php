@@ -45,7 +45,7 @@
 				</div>
 				<div>
 					<label for="radiologistName">Radiologist Name:</label>
-					<input type="text"name="radiologist_name" value="<?php ?>" disabled="disabled" id="radiologistName">
+					<input type="text"name="radiologist_name" value="<?php print $radiologist->user_name; ?>" disabled="disabled" id="radiologistName">
 				</div>
 				<div>
 					<label for="testType">Test Type:</label>
