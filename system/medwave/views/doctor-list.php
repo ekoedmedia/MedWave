@@ -24,13 +24,11 @@
     <div class="content">   
         <div class="content-wrapper">
             <div class="content-header">
-                <a href="./user-add" class="btn">Add User</a>
+                <a href="./add-family-doctor" class="btn">Add Family Doctor</a>
+                <a href="./user-list">User List</a>
             </div>
             <div class="users" id="user-list">
                 <?php include "_users/doctors.list.php"; ?>
-            </div>
-            <div class="tableChange">
-                <a href="./user-list">User List</a>  
             </div>
         </div>
     </div>

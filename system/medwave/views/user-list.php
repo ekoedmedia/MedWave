@@ -25,12 +25,10 @@
         <div class="content-wrapper">
             <div class="content-header">
                 <a href="./user-add" class="btn">Add User</a>
+                <a href="./doctor-list">Doctor List</a>  
             </div>
             <div class="users" id="user-list">
                 <?php include "_users/user.list.php"; ?>
-            </div>
-            <div class="tableChange">
-                <a href="./doctor-list">Doctor List</a>  
             </div>
         </div>
     </div>
