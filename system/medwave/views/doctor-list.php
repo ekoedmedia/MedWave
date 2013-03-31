@@ -25,38 +25,18 @@
         <div class="content-wrapper">
             <div class="content-header">
                 <a href="./user-add" class="btn">Add User</a>
-
             </div>
             <div class="users" id="user-list">
                 <?php include "_users/doctors.list.php"; ?>
             </div>
             <div class="tableChange">
-                <select id="tableType" width="1000"  STYLE="width: 200px" onchange="changeTable();">
-                        <option value="users">Users and Persons</option>
-                        <option value="doctors">Doctors and Patients</option>
-                </select>   
+                <a href="./user-list">User List</a>  
             </div>
         </div>
     </div>
     <footer class="footer">
         <?php include '_base/auth.footer.php'; ?>
     </footer>
-
-    <script type="text/javascript">
-        // Make sure to import jQuery above ^^ before using and jQuery commands
-        function changeTable(){
-            // Get the value from the select menu
-            var tableType = $('#tableType').val();
-            if (tableType == "users") {
-                window.location.replace('./user-list');
-
-            }
-             else if (tableType == "doctors") {
-                //navigate to doctor-list url
-                window.location.replace('./doctor-list');
-            }
-        }
-    </script>
 </body>
 
 </html>

@@ -58,13 +58,9 @@ $stmt->execute();
 
 				print "<td class=\"user-management-controls\">
 					   
-					   	<form method=\"post\" id=\"updateUser\"
-					      onsubmit=\"wat(".$rowNum.")\" class=\"update-user-form\">
-					      
-					          <input type=\"submit\" class=\"update-user-icon\" value=\"\">
-					          <input type=\"hidden\" name=\"user\" value=\"".$result->username."\">
-					          <input type=\"hidden\" name=\"CMD\" value=\"updateUser\">
-					      </form>
+					   	   <div class=\"update-user-form\">
+					           <input type=\"button\" class=\"update-user-icon\" onclick=\"wat(".$rowNum.");\" value=\"\">
+					       </div>
 					    
 					      <form method=\"post\" action=\"./?c=user&d=users\" 
 					      onsubmit=\"return window.confirm('Are you sure you want to delete the user: ".$result->username." ?');
