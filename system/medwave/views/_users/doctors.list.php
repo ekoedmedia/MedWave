@@ -56,7 +56,6 @@ function familyDoctorUpdate(r){
       $.post("./?c=user",{CMD: "updateDoctor",doctor:dName,patient:pName,oldpatient:opName}
       );
 
-      
 }
 </script>        
 <?php ##TODO: PUT IN PAGINATION LINKS ?>

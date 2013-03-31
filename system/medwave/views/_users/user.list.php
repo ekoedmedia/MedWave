@@ -8,14 +8,24 @@ if (isset($_GET['p']) && is_numeric($_GET['p'])) {
 } else{
 	$page = 0;
 }
-$sql = "SELECT u.user_name AS username, p.first_name AS fname, p.last_name AS lname, u.class AS role FROM users u LEFT JOIN persons p ON u.user_name=p.user_name ORDER BY p.user_name DESC LIMIT $page, 50";
+$sql = "SELECT u.user_name AS username, 
+u.password AS password,
+u.date_registered AS date_registered,
+p.first_name AS fname, 
+p.last_name AS lname, 
+p.email AS email,
+p.address AS address,
+p.phone AS phone,
+u.class AS role 
+FROM users u LEFT JOIN persons p ON u.user_name=p.user_name ORDER BY p.user_name DESC LIMIT $page, 50";
 $stmt = $dbcon->prepare($sql);
 $stmt->execute();
 ?>
 
 <table border="1" id="userTable">
 	<tr>
-		<th>Username</th><th>First Name</th><th>Last Name</th><th>Role</th><th>Controls</th>
+		<th>Username</th><th>password</th><th>registration date</th><th>First Name</th><th>Last Name</th><th>email</th>
+		<th>address</th><th>phone #</th><th>Role</th><th>Controls</th>
 	</tr>
 	<?php 
 		$rowNum=0;
@@ -23,9 +33,14 @@ $stmt->execute();
             
 			print "<tr id=".$rowNum.">";
 			
-				print "<td><div id=\"userName".$rowNum."\" contenteditable>".$result->username."</div></td>";
+				print "<td><div id=\"userName".$rowNum."\" >".$result->username."</div></td>";
+				print "<td><div id=\"password".$rowNum."\" contenteditable>".$result->password."</div></td>";
+				print "<td><div id=\"date_registered".$rowNum."\" contenteditable>".$result->date_registered."</div></td>";				
 				print "<td><div id=\"fName".$rowNum."\"contenteditable>".$result->fname."</div></td>";
 				print "<td><div id=\"lName".$rowNum."\"contenteditable>".$result->lname."</div></td>";
+				print "<td><div id=\"email".$rowNum."\" contenteditable>".$result->email."</div></td>";
+				print "<td><div id=\"address".$rowNum."\" contenteditable>".$result->address."</div></td>";
+				print "<td><div id=\"phone".$rowNum."\" contenteditable>".$result->phone."</div></td>";
 				$selected0="";
 				$selected1="";
 				$selected2="";
@@ -49,7 +64,7 @@ $stmt->execute();
 						break;
 				}
 
-				print "<td><select id=\"role-dropdown".$rowNum."\">
+				print "<td><select disabled id=\"role-dropdown".$rowNum."\">
 							<option ".$selected0.">Admin</option>
 							<option ".$selected1." >Doctor</option>
 							<option ".$selected2." >Patient</option>
@@ -78,12 +93,28 @@ $stmt->execute();
 
 <script>
 function wat(r){
-	var userName = document.getElementById("userName"+r);					
-	var fName = document.getElementById("fName"+r);
-	var lName = document.getElementById("lName"+r);
-	var role = document.getElementById("role-dropdown"+r);
-	allvars=userName.innerHTML+" "+fName.innerHTML+" "+lName.innerHTML+" "+role.options[role.selectedIndex].value;
-	alert(allvars);
+	/*u.user_name AS username, 
+	u.password AS password,
+1	u.date_registered AS date_registered,
+	p.first_name AS fname, 
+	p.last_name AS lname, 
+	p.email AS email,
+	p.address AS address,
+	p.phone AS phone,
+	u.class AS role*/
+	var userName = document.getElementById("userName"+r).innerHTML;					
+	var password = document.getElementById("password"+r).innerHTML;
+	var date_registered= document.getElementById("date_registered"+r).innerHTML;
+	var fName = document.getElementById("fName"+r).innerHTML;
+	var lName = document.getElementById("lName"+r).innerHTML;
+	var email = document.getElementById("email"+r).innerHTML;
+	var address = document.getElementById("address"+r).innerHTML;
+	var phone = document.getElementById("phone"+r).innerHTML;
+//	var role = document.getElementById("role-dropdown"+r);
+	
+	$.post("./?c=user",{CMD: "updateUser",username:userName, password:password, date_registered:date_registered,
+	fname:fName, lname:lName, email:email, address:address,phone:phone}
+      );
 }
 
 </script>

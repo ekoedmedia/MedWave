@@ -57,7 +57,10 @@ namespace Ekoed\Core {
                 // Seperate the destination from the controller
                 $selectedControllers = explode('&d=', $controller[1]);
                 $controller = $selectedControllers[0];
-                $destination = $selectedControllers[1];
+                if (count($selectedControllers) > 2)
+                    $destination = $selectedControllers[1];
+                else
+                    $destination = null;
                 try {
                     $this->loadController($controller, $destination);
                 } catch (\RuntimeException $e) {
