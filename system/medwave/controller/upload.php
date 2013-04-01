@@ -45,6 +45,8 @@ namespace MedWave\Controller {
          * on variables passed into function.
          */
         public function upload() {
+            $this->authCheck(); // Check if authenticated
+            
             $error_7000 = new ErrorModel('Upload', '7000', 'Some fields are blank left blank.');
             $error_7001 = new ErrorModel('Upload', '7001', 'Record ID is already in database.');
             $success = new SuccessModel('Upload', 'Successfully added Radiology Record to Database.');

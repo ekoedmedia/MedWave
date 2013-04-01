@@ -9,7 +9,7 @@ if (isset($_GET['p']) && is_numeric($_GET['p'])) {
 } else{
     $page = 0;
 }
-$sql = "SELECT doctor_name,patient_name FROM family_doctor WHERE 1";
+$sql = "SELECT doctor_name, patient_name FROM family_doctor WHERE 1";
 $stmt = $dbcon->prepare($sql);
 $stmt->execute();
 ?>

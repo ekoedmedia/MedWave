@@ -109,7 +109,7 @@ namespace MedWave\Controller {
             $error_4003 = new ErrorModel('UpdatePerson', '4003', 'Email exceeds maximum length of 128 characters.');
             $error_4004 = new ErrorModel('UpdatePerson', '4004', 'Email not in valid format: user@domain.com');
             $error_4005 = new ErrorModel('UpdatePerson', '4005', 'Phone number has maximum length of 10 digits.');
-            $success = new SuccessModel('UpdatePerson', 'You have updated your account information successfully.');
+            $success = new SuccessModel('UpdatePerson', 'You have updated '.$_POST["username"].'\'s account information successfully.');
 
             // First Name length check
             if ($_POST['fname'] != "" && strlen(trim($_POST['fname'])) > 24) {
