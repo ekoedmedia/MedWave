@@ -15,7 +15,19 @@
 <head>
 	<title>User Management</title>
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
-
+	<link href="media/select2/select2.css" rel="stylesheet" type="text/css">
+	<link href="media/jquery-ui/css/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="media/js/jquery.min.js"></script>
+	<script src="media/select2/select2.min.js" type="text/javascript"></script>
+	<script src="media/jquery-ui/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script>
+		$(document).ready(function() { 
+			$('#doctorList').select2(); 
+			$('#patientList').select2();
+			$('#testDate').datepicker();
+			$('#prescribingDate').datepicker();
+		});
+	</script>
 </head>
 <body>
 	<header class="header">
@@ -26,34 +38,35 @@
 	    	<?php include "_uploading/form-data.php"; ?>
 	    	<?php include "_base/form.success.php"; ?>
 			<?php include "_base/form.error.php"; ?>
-			<form action="./?c=upload&d=home" method="post" enctype="multipart/form-data" action="uploade.php" method="POST">
+			<form action="./?c=upload&d=upload" method="post" enctype="multipart/form-data" action="uploade.php" method="POST">
 				<div>
 					<label for="recordID">Record ID:</label>
 					<input type="text" name="record_id" value="" id="recordID">
 				</div>
 				<div>
 					<label for="patientName">Patient Name:</label>
-					<select name="patientName" id="patientName">
+					<select name="patientName" id="patientList" style="width:200px;">
 						<?php print $patients; ?>
 					</select>
 				</div>
 				<div>
 					<label for="doctorName">Doctor Name:</label>
-					<select name="patientName" id="doctorName">
+					<select name="doctorName" id="doctorList" style="width:200px;">
 						<?php print $doctors; ?>
 					</select>
 				</div>
 				<div>
 					<label for="radiologistName">Radiologist Name:</label>
-					<input type="text"name="radiologist_name" value="<?php print $radiologist->user_name; ?>" disabled="disabled" id="radiologistName">
+					<input type="text" value="<?php print $radiologist->user_name; ?>" disabled="disabled" id="radiologistName">
+					<input type="hidden" value="<?php print $radiologist->user_name; ?>" name="radiologistName">
 				</div>
 				<div>
 					<label for="testType">Test Type:</label>
 					<input type="text" name="test_type" value="" id="testType">
 				</div>
 				<div>
-					<label for="trescribingDate">Prescribing Date:</label>
-					<input type="text" name="prescribing_date" value="" id="trescribingDate">
+					<label for="prescribingDate">Prescribing Date:</label>
+					<input type="text" name="prescribing_date" value="" id="prescribingDate">
 				</div>
 				<div>
 					<label for="testDate">Test Date:</label>
@@ -73,7 +86,6 @@
 				</div>
 				<div>
 					<input type="submit" value="submit record">
-					<input type="hidden" name="MAX_FILE_SIZE" value="1000000000000" >
 					<input type="hidden" name="CMD" value="upload">
 				</div>
 			</form>
@@ -82,6 +94,5 @@
 	<footer class="footer">
 		<?php include '_base/auth.footer.php'; ?>
 	</footer>
-	<script type="text/javascript" src="media/js/jquery.min.js"></script>
 </body>
 </html>

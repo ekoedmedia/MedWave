@@ -45,82 +45,99 @@ namespace MedWave\Controller {
          * on variables passed into function.
          */
         public function upload() {
-            $error_3000 = new ErrorModel('Report', '3000', 'Some fields are blank left blank.');
-                
-            // Checks if post values are set.
-            if (!isset($_POST["record_id"])) {
-                $_SESSION['error'] = serialize($error_3000);
-                header("Location: /".$this->getBaseDir()."/");
-            } else {
-            $record_id=$_POST["record_id"]  ;
-            $patient =$_POST["patient"];
-            $doctor_name=$_POST["doctor_name"];
-            $radiologist_name=$_POST["radiologist_name"];
-            $test_type=$_POST["test_type"];
-            $prescribing_date=strtotime($_POST["prescribing_date"]);
-            $test_date=strtotime($_POST["test_date"]);
-            $diagnosis=$_POST["diagnosis"];
-            $description=$_POST["description"];
-            //$upload=$_POST["upload"];
+            $error_7000 = new ErrorModel('Upload', '7000', 'Some fields are blank left blank.');
+            $error_7001 = new ErrorModel('Upload', '7001', 'Record ID is already in database.');
+            $success = new SuccessModel('Upload', 'Successfully added Radiology Record to Database.');
             
-                // Testing if trimmed input is valid
-                if (trim($record_id == "") ) {
-                    $_SESSION['error'] = serialize($error_3000);
-                    header("Location: /".$this->getBaseDir()."/");
+            // Checks if post record id is set.
+            if (!isset($_POST["record_id"]) || empty($_POST['record_id']) || trim($_POST['record_id']) == "") {
+                $_SESSION['error'] = serialize($error_7000);
+                header("Location: /".$this->getBaseDir()."/uploading-module");
+            } else {
+                $record_id = trim($_POST["record_id"]);
+                $sql = "SELECT record_id FROM radiology_record WHERE record_id=:id";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(":id" => $record_id));
+                $result = $stmt->rowCount();
+
+                // Check if record id already exists in Database
+                if ($result == 1) {
+                    $_SESSION['error'] = serialize($error_7001);
+                    header("Location: /".$this->getBaseDir()."/uploading-module");
                 } else {
-                    // Querying of Database to See if User Exists
+
+                    $patient = $_POST["patientName"];
+                    $doctor_name = $_POST["doctorName"];
+                    $radiologist_name = $_POST["radiologistName"];
+                    $test_type = $_POST["test_type"];
+                    $prescribing_date = date("Y-m-d", strtotime($_POST["prescribing_date"]));
+                    $test_date = date("Y-m-d", strtotime($_POST["test_date"]));
+                    $diagnosis = $_POST["diagnosis"];
+                    $description = $_POST["description"];
+            
+                    // Insert of Record into Database
                     $sql = "INSERT INTO radiology_record
                             (record_id,patient_name,doctor_name,radiologist_name,test_type,
                                     prescribing_date,test_date,diagnosis,description)
                             VALUES (:record_id,:patient_name,:doctor_name,:radiologist_name,:test_type,
                                     :prescribing_date,:test_date,:diagnosis,:description)"; 
                     $stmt = $this->dbHandle->prepare($sql);
-                    $stmt->bindParam(':record_id',$record_id);
-                    $stmt->bindParam(':patient_name',$patient);
-                    $stmt->bindParam(':doctor_name',$doctor_name);
-                    $stmt->bindParam(':radiologist_name',$radiologist_name);
-                    $stmt->bindParam(':prescribing_date',$prescribing_date);
-                    $stmt->bindParam(':test_type',$test_type);
-                    $stmt->bindParam(':diagnosis',$diagnosis);
-                    $stmt->bindParam(':test_date',$test_date);                    
-                    $stmt->bindParam(':description',$description);
+                    $stmt->bindParam(':record_id', $record_id);
+                    $stmt->bindParam(':patient_name', $patient);
+                    $stmt->bindParam(':doctor_name', $doctor_name);
+                    $stmt->bindParam(':radiologist_name', $radiologist_name);
+                    $stmt->bindParam(':prescribing_date', $prescribing_date);
+                    $stmt->bindParam(':test_type', $test_type);
+                    $stmt->bindParam(':diagnosis', $diagnosis);
+                    $stmt->bindParam(':test_date', $test_date);                    
+                    $stmt->bindParam(':description', $description);
+
                     try {
-                    $stmt->execute();
+                        $stmt->execute();
                     } catch (\Exception $e) {
                         print $e->getMessage();
                     }
 
-                     var_dump($_FILES);
-                     print "<br>";
-                     // die();
-                    $result = count($_FILES["uploadedfile"]["name"])-1;
-                    for($result;$result>=0;$result--){
-                        print "<br>";
-                        print "filenumber".$result;
-                        print "<br>";
-                        print $_FILES["uploadedfile"]["tmp_name"][$result]."    ".$_FILES["uploadedfile"]["name"][$result];
-                         //values(12,1,null,null,null)
-                        $sql="INSERT INTO pacs_images(record_id,image_id,thumbnail,regular_size,full_size) 
-                        values(:record_id,:record_id,:regular_size,:regular_size,:regular_size)";
-                        $img =addslashes (file_get_contents($_FILES["uploadedfile"]["tmp_name"][$result]));
+                    $result = count($_FILES["uploadedfile"]["name"]);
+                    for ($i = 0; $i < $result; $i++){
+                        // Moves file temporarily
+                        move_uploaded_file($_FILES["uploadedfile"]["tmp_name"][$i], 'system/tmp/upload.jpeg');
+
+                        // Resize for Thumbnail Size
+                        $imagine = new \Imagine\Gd\Imagine();
+                        $thumbnail = $imagine->open('system/tmp/upload.jpeg');
+                        $thumbnail->resize(new \Imagine\Image\Box(100, 100));
+
+                        // Resize for Regular Size
+                        $normal = $imagine->open('system/tmp/upload.jpeg');
+                        $box = $normal->getSize();
+                        $normal->resize(new \Imagine\Image\Box(ceil($box->getWidth()/2), ceil($box->getHeight()/2)));
+
+                        // Insert Data into Database
+                        $sql = "INSERT INTO pacs_images (record_id, image_id, thumbnail, regular_size, full_size) 
+                                VALUES (:record_id, :image_id, :thumb, :regular_size, :full_size)";
+                        $fullImg = file_get_contents('system/tmp/upload.jpeg');
                         $stmt = $this->dbHandle->prepare($sql);
-                        $stmt->bindParam(':record_id',$record_id);
-                        $stmt->bindParam(':regular_size',$img);
-                        print $record_id;
+                        $stmt->bindParam(':record_id', $record_id);
+                        $stmt->bindParam(':image_id', $i);
+                        $thumbnail_var = $thumbnail->get("jpeg");
+                        $stmt->bindParam(':thumb', $thumbnail_var);
+                        $normal_var = $normal->get("jpeg");
+                        $stmt->bindParam(':regular_size', $normal_var);
+                        $stmt->bindParam(':full_size', $fullImg);
+
                         try {
                             $stmt->execute();
                         } catch (\Exception $e) {
-                                print $e->getMessage();
+                            print $e->getMessage();
                         }
- 
+
+                        unlink('system/tmp/upload.jpeg');
                     }
 
-
-                     // If count is 0, then throw an error
-                   
-                    
-                   
-                }
+                    $_SESSION['success'] = serialize($success);
+                    header("Location: /".$this->getBaseDir()."/".$this->getDestination());
+                }   
             }
         }
 
@@ -130,24 +147,6 @@ namespace MedWave\Controller {
          */
         public function updateData() {}
 
-        /**
-         * Creates User from a User Object
-         * that is persisted to the database.
-         */
-        public function createUser() {}
-
-        /**
-         * Destroys User session so that
-         * they are no longer logged in.
-         */
-        public function unauthenticate() {
-//            print "2";
-            session_destroy();
-            session_start();
-            $success = new SuccessModel('Authentication', 'You were successfully logged out.');
-            $_SESSION['success'] = serialize($success);
-            header("Location: /".$this->getBaseDir()."/");
-        }
 
 
         /***************************\
