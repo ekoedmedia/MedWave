@@ -57,8 +57,9 @@ namespace Ekoed\Core {
                 // Seperate the destination from the controller
                 $selectedControllers = explode('&d=', $controller[1]);
                 $controller = $selectedControllers[0];
-                $destination = $selectedControllers[1];
-                if ($destination == "null")
+                if (isset($selectedControllers[1]))
+                    $destination = $selectedControllers[1];
+                else 
                     $destination = null;
                 try {
                     $this->loadController($controller, $destination);
@@ -69,12 +70,17 @@ namespace Ekoed\Core {
             } else {
                 // Since Route is not a controller, attempt to load view
                 $base_url = explode(DIRECTORY_SEPARATOR, $route, 2);
+
                 $inArray = array_search($this->getBaseDir(), $base_url);
                 if ($inArray !== false) {
                     unset($base_url[$inArray]);
                     $base_url = array_values($base_url);
                 }
                 // Sends index.php view if no path
+                $urlToGo = strstr($base_url[0], '?', true);
+                if ($urlToGo != FALSE)
+                    $base_url[0] = $urlToGo;
+                
                 if ($base_url[0] == ""){
                     return $this->getSystemBaseDir().'/medwave/views/index.php';
                 // Sends view based on base_url[0]
@@ -138,7 +144,7 @@ namespace Ekoed\Core {
          *
          * @return System Base Directory
          */
-        protected function getSystemBaseDir()
+        public function getSystemBaseDir()
         {
             return $this->systemBaseDir;
         }
