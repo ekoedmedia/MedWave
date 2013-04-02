@@ -35,6 +35,7 @@
 	</header>
 	<div class="content">
 	    <div class="content-wrapper">
+	    	<h2>Upload Radiology Record</h2>
 	    	<?php include "_uploading/form-data.php"; ?>
 	    	<?php include "_base/form.success.php"; ?>
 			<?php include "_base/form.error.php"; ?>

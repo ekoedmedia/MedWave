@@ -109,7 +109,14 @@ namespace MedWave\Controller {
             $error_4003 = new ErrorModel('UpdatePerson', '4003', 'Email exceeds maximum length of 128 characters.');
             $error_4004 = new ErrorModel('UpdatePerson', '4004', 'Email not in valid format: user@domain.com');
             $error_4005 = new ErrorModel('UpdatePerson', '4005', 'Phone number has maximum length of 10 digits.');
+            $error_4006 = new ErrorModel('UpdatePerson', '4006', 'Email is already registered.');
             $success = new SuccessModel('UpdatePerson', 'You have updated '.$_POST["username"].'\'s account information successfully.');
+
+            $sql = "SELECT COUNT(*) AS count FROM persons WHERE email=:email AND user_name<>:user";
+            $stmt = $this->dbHandle->prepare($sql);
+            $stmt->execute(array(':email' => $_POST['email'],
+                                 ':user' => $_POST['username']));
+            $results = $stmt->fetch(\PDO::FETCH_LAZY);
 
             // First Name length check
             if ($_POST['fname'] != "" && strlen(trim($_POST['fname'])) > 24) {
@@ -129,12 +136,15 @@ namespace MedWave\Controller {
             // Email valid check
             } elseif ($_POST['email'] != "" && !filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL)) {
                 print $error_4004->getMessage();
+            } elseif ($results->count > 0) {
+                print $error_4006->getMessage();
             // Everything is good, insert or update db
             } else {
-                $sql = "SELECT * FROM persons WHERE user_name=:name";
+                $sql = "SELECT COUNT(*) AS count FROM persons WHERE user_name=:name";
                 $stmt = $this->dbHandle->prepare($sql);
                 $stmt->execute(array(':name' => $_POST['username']));
-                if ($stmt->rowCount() == 1){
+                $result = $stmt->fetch(\PDO::FETCH_LAZY);
+                if ($result->count == 1){
                     $sql = "UPDATE persons SET first_name=:fname, last_name=:lname, address=:address, email=:email, phone=:phone WHERE user_name=:name";
                 } else {
                     $sql = "INSERT INTO persons (first_name, last_name, address, email, phone, user_name) VALUES (:fname, :lname, :address, :email, :phone, :name)";
@@ -148,11 +158,12 @@ namespace MedWave\Controller {
                 $stmt->bindParam(':name', $_POST['username']);
                 $stmt->execute();
 
-                $sql = "UPDATE users SET password=:password,date_registered=:date_registered
+                $sql = "UPDATE users SET password=:password, date_registered=:date_registered
                 WHERE user_name=:username";
                 $stmt = $this->dbHandle->prepare($sql);
-                $stmt->execute(array(":password"=>$_POST['password'],":username"=>$_POST['username'],
-                    ":date_registered"=>$_POST['date_registered']));
+                $stmt->execute(array(":password"=>$_POST['password'],
+                                     ":username"=>$_POST['username'],
+                                     ":date_registered"=>urldecode($_POST['date_registered'])));
 
 
                 print $success->getMessage();
@@ -171,7 +182,14 @@ namespace MedWave\Controller {
             $error_4003 = new ErrorModel('UpdatePerson', '4003', 'Email exceeds maximum length of 128 characters.');
             $error_4004 = new ErrorModel('UpdatePerson', '4004', 'Email not in valid format: user@domain.com');
             $error_4005 = new ErrorModel('UpdatePerson', '4005', 'Phone number has maximum length of 10 digits.');
+            $error_4006 = new ErrorModel('UpdatePerson', '4006', 'Email is already registered.');
             $success = new SuccessModel('UpdatePerson', 'You have updated your account information successfully.');
+
+            $sql = "SELECT COUNT(*) AS count FROM persons WHERE email=:email AND user_name<>:user";
+            $stmt = $this->dbHandle->prepare($sql);
+            $stmt->execute(array(':email' => $_POST['email'],
+                                 ':user' => $_SESSION['username']));
+            $results = $stmt->fetch(\PDO::FETCH_LAZY);
 
             // First Name length check
             if ($_POST['fname'] != "" && strlen(trim($_POST['fname'])) > 24) {
@@ -197,12 +215,16 @@ namespace MedWave\Controller {
             } elseif ($_POST['email'] != "" && !filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['error'] = serialize($error_4004);
                 header("Location: /".$this->getBaseDir()."/account");
+            } elseif ($results->count > 0) {
+                $_SESSION['error'] = serialize($error_4006);
+                header("Location: /".$this->getBaseDir()."/account");
             // Everything is good, insert or update db
             } else {
-                $sql = "SELECT * FROM persons WHERE user_name=:name";
+                $sql = "SELECT COUNT(*) AS count FROM persons WHERE user_name=:name";
                 $stmt = $this->dbHandle->prepare($sql);
                 $stmt->execute(array(':name' => $_SESSION['username']));
-                if ($stmt->rowCount() == 1){
+                $result = $stmt->fetch(\PDO::FETCH_LAZY);
+                if ($result->count == 1){
                     $sql = "UPDATE persons SET first_name=:fname, last_name=:lname, address=:address, email=:email, phone=:phone WHERE user_name=:name";
                 } else {
                     $sql = "INSERT INTO persons (first_name, last_name, address, email, phone, user_name) VALUES (:fname, :lname, :address, :email, :phone, :name)";
