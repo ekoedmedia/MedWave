@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS family_doctor;
 DROP TABLE IF EXISTS pacs_images;
 DROP TABLE IF EXISTS radiology_record;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS radiology_search;
 
 
 CREATE TABLE users (
@@ -67,3 +68,15 @@ CREATE TABLE pacs_images (
    PRIMARY KEY(record_id,image_id),
    FOREIGN KEY(record_id) REFERENCES radiology_record (record_id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE radiology_search (  
+   record_id int,  
+   patient_name varchar(24),  
+   diagnosis varchar(128),  
+   description varchar(1024),  
+   PRIMARY KEY (record_id),  
+   FULLTEXT KEY patient_name (patient_name),  
+   FULLTEXT KEY diagnosis (diagnosis),  
+   FULLTEXT KEY description (description),  
+   FULLTEXT KEY searchkey (patient_name, diagnosis, description)
+) ENGINE=MyISAM;
