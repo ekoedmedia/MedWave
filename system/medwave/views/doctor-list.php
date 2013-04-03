@@ -24,7 +24,7 @@
     <div class="content">   
         <div class="content-wrapper">
             <div class="content-header">
-                <a href="./add-family-doctor" class="btn">Add Family Doctor</a>
+                <a href="./doctor.add.php" class="btn">Add Family Doctor</a>
                 <a href="./user-list">User List</a>
             </div>
             <div class="users" id="user-list">

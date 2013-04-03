@@ -31,7 +31,7 @@
     <div class="content">   
         <div class="content-wrapper">
             <div class="content-header">
-                <a href="./user-add" class="btn">Add User</a>
+                <a href="./user.add" class="btn">Add User</a>
                 <a href="./doctor-list">Doctor List</a>  
             </div>
             <div class="users" id="user-list">

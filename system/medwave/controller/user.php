@@ -86,7 +86,12 @@ namespace MedWave\Controller {
             }
         }
 
-        
+        public function addDoctor(){
+            $sql="INSERT INTO family_doctor (family_doctor,patient_name) 
+            VALUES(:doctor,:patient)";
+            $stmt = $this->dbHandle->prepare($sql);
+            stmt->execute(array(":doctor"=>$_POST['doctor'],":patient"=>$_POST['patient']));
+        }
         public function updateDoctor() 
         {
            
@@ -97,6 +102,69 @@ namespace MedWave\Controller {
 
         }
 
+       /*adds a user*/
+        public function addUser(){
+            
+            $this->authCheck(); // Check if authenticated
+            $error_4000 = new ErrorModel('UpdatePerson', '4000', 'First Name exceeds maximum length of 24 characters.');
+            $error_4001 = new ErrorModel('UpdatePerson', '4001', 'Last Name exceeds maximum length of 24 characters.');
+            $error_4002 = new ErrorModel('UpdatePerson', '4002', 'Address exceeds maximum length of 128 characters.');
+            $error_4003 = new ErrorModel('UpdatePerson', '4003', 'Email exceeds maximum length of 128 characters.');
+            $error_4004 = new ErrorModel('UpdatePerson', '4004', 'Email not in valid format: user@domain.com');
+            $error_4005 = new ErrorModel('UpdatePerson', '4005', 'Phone number has maximum length of 10 digits.');
+            $success = new SuccessModel('UpdatePerson', 'You have updated your account information successfully.');            
+
+            // First Name length check
+            if ($_POST['fname'] != "" && strlen(trim($_POST['fname'])) > 24) {
+                print $error_4000->getMessage();
+            // Last Name length check
+            } elseif ($_POST['lname'] != "" && strlen(trim($_POST['lname'])) > 24) {
+                print $error_4001->getMessage();
+            // Address length check
+            } elseif ($_POST['address'] != "" && strlen(trim($_POST['address'])) > 128) {
+                print $error_4002->getMessage();
+            // Email length check
+            } elseif ($_POST['email'] != "" && strlen(trim($_POST['email'])) > 128) {
+                print $error_4003->getMessage();
+            // Phone number length & valid check
+            } elseif ($_POST['phone'] != "" && (strlen(trim($_POST['phone'])) > 10 || !is_numeric($_POST['phone']))) {
+                print $error_4005->getMessage();
+            // Email valid check
+            } elseif ($_POST['email'] != "" && !filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL)) {
+                print $error_4004->getMessage();
+            // Everything is good, insert or update db
+            } else {
+                $sql = "SELECT * FROM persons WHERE user_name=:name";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(':name' => $_POST['username']));
+                if ($stmt->rowCount() == 1){
+                    $sql = "UPDATE persons SET first_name=:fname, last_name=:lname, address=:address, email=:email, phone=:phone WHERE user_name=:name";
+                } else {
+                    $sql = "INSERT INTO persons (first_name, last_name, address, email, phone, user_name) VALUES (:fname, :lname, :address, :email, :phone, :name)";
+                }
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->bindParam(':fname', $_POST['fname']);
+                $stmt->bindParam(':lname', $_POST['lname']);
+                $stmt->bindParam(':address', $_POST['address']);
+                $stmt->bindParam(':email', $_POST['email']);
+                $stmt->bindParam(':phone', $_POST['phone']);
+                $stmt->bindParam(':name', $_POST['username']);
+                $stmt->execute();
+
+                $sql = "INSERT INTO users SET (user_name,passowrd,class,date_registered) VALUES
+                    (:username,:password,:class,date_registered);
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(:class"=>$_POST['role'],":password"=>$_POST['password'],":username"=>$_POST['username'],
+                    ":date_registered"=>$_POST['date_registered']));
+
+
+                print $success->getMessage();
+            }
+
+
+
+        }
+        
         /**
          * Takes user input and stores it into the database.
          */
