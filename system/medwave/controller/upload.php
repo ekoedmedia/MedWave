@@ -100,6 +100,22 @@ namespace MedWave\Controller {
                         print $e->getMessage();
                     }
 
+                    // Insert of Record into Database for Search
+                    $sql = "INSERT INTO radiology_search
+                            (record_id, patient_name, diagnosis, description)
+                            VALUES (:record_id, :patient_name, :diagnosis, :description)"; 
+                    $stmt = $this->dbHandle->prepare($sql);
+                    $stmt->bindParam(':record_id', $record_id);
+                    $stmt->bindParam(':patient_name', $patient);
+                    $stmt->bindParam(':diagnosis', $diagnosis);                  
+                    $stmt->bindParam(':description', $description);
+
+                    try {
+                        $stmt->execute();
+                    } catch (\Exception $e) {
+                        print $e->getMessage();
+                    }
+
                     $result = count($_FILES["uploadedfile"]["name"]);
                     for ($i = 0; $i < $result; $i++){
                         // Moves file temporarily
@@ -115,7 +131,7 @@ namespace MedWave\Controller {
                         $box = $normal->getSize();
                         $normal->resize(new \Imagine\Image\Box(ceil($box->getWidth()/2), ceil($box->getHeight()/2)));
 
-                        // Insert Data into Database
+                        // Insert Data into Database for Images
                         $sql = "INSERT INTO pacs_images (record_id, image_id, thumbnail, regular_size, full_size) 
                                 VALUES (:record_id, :image_id, :thumb, :regular_size, :full_size)";
                         $fullImg = file_get_contents('system/tmp/upload.jpeg');
@@ -149,6 +165,23 @@ namespace MedWave\Controller {
          */
         public function updateData() {}
 
+
+        /**
+         * Makes sure user is logged in
+         * if they are not it redirects the user
+         * to the sites base directory.
+         */
+        private function authCheck()
+        {
+            if (!isset($_SESSION['logged']) || $_SESSION['logged'] != true) {
+                session_destroy();
+                session_start();
+                $baseDir = $core->getBaseDir();
+                $error = new ErrorModel('Authentication', '1002', 'You are not authenticated.');
+                $_SESSION['error'] = serialize($error);
+                header("Location: /".$baseDir);
+            }
+        }
 
 
         /***************************\

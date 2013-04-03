@@ -86,6 +86,7 @@ namespace MedWave\Controller {
             }
         }
 
+        
         public function updateDoctor() 
         {
            
@@ -95,10 +96,10 @@ namespace MedWave\Controller {
                     ":oldpatient" => $_POST['oldpatient']));
 
         }
+
         /**
          * Takes user input and stores it into the database.
          */
- 
         public function updateUser() 
         {
             $this->authCheck(); // Check if authenticated

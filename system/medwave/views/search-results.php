@@ -2,23 +2,23 @@
 <?php 
 	switch ($role) {
 		case 'p':
-			$fileToInclude = "_home/patient.php";
+			$fileToInclude = "_search/patient.php";
 			break;
 		case 'd':
-			$fileToInclude = "_home/doctor.php";
+			$fileToInclude = "_search/doctor.php";
 			break;
 		case 'r':
-			$fileToInclude = "_home/radiologist.php";
+			$fileToInclude = "_search/radiologist.php";
 			break;
 		case 'a':
-			$fileToInclude = "_home/admin.php";
+			$fileToInclude = "_search/admin.php";
 			break;
 	}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
+	<title>Search Results</title>
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
 	<link href="media/select2/select2.css" rel="stylesheet" type="text/css">
 	<link href="media/jquery-ui/css/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css">
