@@ -48,16 +48,16 @@
 	    	<div class="analysis-form">
 	    		<form method="GET">
 	    			<div>
-	    				<input type="checkbox" name="patientName" id="patientName" <?php print $patientChecked; ?>><label for="patientName">Patient Name</label>
-	    				<input type="checkbox" name="testType" id="testType" <?php print $testTypeChecked; ?>><label for="testType">Test Type</label>
-	    				<input type="checkbox" name="timeHorizon" id="timeHorizonCheckbox" <?php print $timeChecked; ?>><label for="timeHorizonCheckbox">Time</label>
+	    				<input type="checkbox" name="patientName" id="patientName" <?php print (isset($patientChecked) ? $patientChecked : ""); ?>><label for="patientName">Patient Name</label>
+	    				<input type="checkbox" name="testType" id="testType" <?php print (isset($testTypeChecked) ? $testTypeChecked : ""); ?>><label for="testType">Test Type</label>
+	    				<input type="checkbox" name="timeHorizon" id="timeHorizonCheckbox" <?php print (isset($timeChecked) ? $timeChecked : ""); ?>><label for="timeHorizonCheckbox">Time</label>
 	    			</div>
 	    			<div style="display:<?php print $timeHorizon; ?>;" id="timeHorizon">
 	    				<label for="timeHorizonSet">Timeframe:</label>
-	    				<select name="timeHorizonSet" id="timeHorizonSet" <?php print $timeHorizonSet; ?>>
-	    					<option value="week" <?php print $weekSelected; ?>>Week</option>
-	    					<option value="month" <?php print $monthSelected; ?>>Month</option>
-	    					<option value="year" <?php print $yearSelected; ?>>Year</option>
+	    				<select name="timeHorizonSet" id="timeHorizonSet" <?php print (isset($timeHorizonSet) ? $timeHorizonSet : ""); ?>>
+	    					<option value="week" <?php print (isset($weekSelected) ? $weekSelected : ""); ?>>Week</option>
+	    					<option value="month" <?php print (isset($monthSelected) ? $monthSelected : ""); ?>>Month</option>
+	    					<option value="year" <?php print (isset($yearSelected) ? $yearSelected : ""); ?>>Year</option>
 	    				</select>
 	    			</div>
 	    			<div>
@@ -65,7 +65,31 @@
 	    			</div>
 	    		</form>
 	    	</div>
-	    	<div class="analysis-results" id="results"><?php if (isset($results)){ print "RESULTS"; } ?></div>
+	    	<div class="analysis-results" id="results">
+	    		<?php 
+	    			$i = 0;
+    				print "<table>";
+    				print "<tr>
+    					       <th>Image Count</th>";
+    				if (isset($patientChecked)) print "<th>Patient</th>";
+    				if (isset($testTypeChecked)) print "<th>Test Type</th>";
+    				if (isset($timeChecked)) print "<th>Time</th>";
+    				print "</tr>";
+
+    				while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
+    					$i = 1;
+    					print "<tr>";
+    						print "<td>".$results->imgCount."</td>";
+    						if (isset($patientChecked)) print "<td>".$results->patient_name."</td>";
+    						if (isset($testTypeChecked)) print "<td>".$results->test_type."</td>";
+    						if (isset($timeChecked)) print "<td>".$results->test_date."</td>";
+    					print "</tr>";
+    				}
+    				print "</table>";
+    				if ($i == 0)
+    					print "<p>No OLAP Data :(</p>";
+	    		?>
+	    	</div>
 	    </div>
 	</div>
 	<footer class="footer">
