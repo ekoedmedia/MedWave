@@ -36,56 +36,62 @@
 	}
 ?>
 <div class="content-wrapper">
+	<hr>
 	<div class="search-results">
 		<?php
 			$i = 0; // Used for displaying if there are no results or not.
 			// Start printing out information on records.
 			while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
 				$i = 1;
-				print "<div class=\"record\">";
+				print "<div class=\"record media\">";
 					// Get Images from Database for Record ID
 					$sql = "SELECT image_id FROM pacs_images WHERE record_id=:record_id";
 					$stmtImg = $dbcon->prepare($sql);
 					$stmtImg->execute(array(":record_id" => $results->record_id));
-					print "<div class=\"images\">";
+					print "<div class=\"images pull-left\">";
 						while ($imgs = $stmtImg->fetch(\PDO::FETCH_LAZY)) {
-							print "<div>";
+							print "<div class=\"media-object\" style=\"margin-bottom:5px;\">";
+								print "<div>";
 								print "<img src=\"./record-image?iid=".$imgs->image_id."&rid=".$results->record_id."&fmt=thumb\" rel=\"recordImgThumb\" alt=\"Full Size\" style=\"\">";
 								print "<img src=\"./record-image?iid=".$imgs->image_id."&rid=".$results->record_id."&fmt=reg\" rel=\"recordImgReg\" alt=\"Regular Size\" style=\"display:none;\">";
-								print "<a style=\"display:none;\" rel=\"recordImgFull\" href=\"./record-image?iid=".$imgs->image_id."&rid=".$results->record_id."&fmt=full\" target=\"_blank\">View Full Size</a>";
+								print "</div>";
+								print "<a style=\"display:none;margin:10px auto;\" class=\"btn btn-info\" rel=\"recordImgFull\" href=\"./record-image?iid=".$imgs->image_id."&rid=".$results->record_id."&fmt=full\" target=\"_blank\">View Full Size</a>";
 							print "</div>";
 						}
 					print "</div>";
 
 					// Record Informations
-					print "<div class=\"rid\"><span>Record ID:</span> ".$results->record_id."</div>";
+					print "<div class=\"media-body\">";
+						print "<h4 class=\"media-heading\">Record ID: ".$results->record_id."</h4>";
 
-					// Query for actual names
-					$sql = "SELECT first_name, last_name FROM persons WHERE user_name=:name";
-					$stmtName = $dbcon->prepare($sql);
-					$stmtName->execute(array(":name" => $results->patient_name));
-					$names = $stmtName->fetch(\PDO::FETCH_LAZY);
-					print "<div class=\"patient\"><span>Patient:</span> ".$names->first_name." ".$names->last_name." (".$results->patient_name.")</div>";
+						// Query for actual names
+						$sql = "SELECT first_name, last_name FROM persons WHERE user_name=:name";
+						$stmtName = $dbcon->prepare($sql);
+						$stmtName->execute(array(":name" => $results->patient_name));
+						$names = $stmtName->fetch(\PDO::FETCH_LAZY);
+						print "<div class=\"patient\"><strong>Patient:</strong> ".$names->first_name." ".$names->last_name." (".$results->patient_name.")</div>";
 
-					$stmtName = $dbcon->prepare($sql);
-					$stmtName->execute(array(":name" => $results->doctor_name));
-					$names = $stmtName->fetch(\PDO::FETCH_LAZY);
-					print "<div class=\"doctor\"><span>Doctor:</span> ".$names->first_name." ".$names->last_name." (".$results->doctor_name.")</div>";
-				
-					$stmtName = $dbcon->prepare($sql);
-					$stmtName->execute(array(":name" => $results->radiologist_name));
-					$names = $stmtName->fetch(\PDO::FETCH_LAZY);
-					print "<div class=\"radiologist\"><span>Radiologist:</span> ".$names->first_name." ".$names->last_name." (".$results->radiologist_name.")</div>";
+						$stmtName = $dbcon->prepare($sql);
+						$stmtName->execute(array(":name" => $results->doctor_name));
+						$names = $stmtName->fetch(\PDO::FETCH_LAZY);
+						print "<div class=\"doctor\"><strong>Doctor:</strong> ".$names->first_name." ".$names->last_name." (".$results->doctor_name.")</div>";
 					
-					print "<div class=\"testType\"><span>Test Type:</span> ".$results->test_type."</div>";
-					print "<div class=\"prescribingDate\"><span>Prescribing Date:</span> ".$results->prescribing_date."</div>";
-					print "<div class=\"testDate\"><span>Test Date:</span> ".$results->test_date."</div>";
-					print "<div class=\"diagnosis\"><span>Diagnosis:</span> ".$results->diagnosis."</div>";
-					print "<div class=\"description\"><span>Description:</span><br>".$results->description."</div>";
+						$stmtName = $dbcon->prepare($sql);
+						$stmtName->execute(array(":name" => $results->radiologist_name));
+						$names = $stmtName->fetch(\PDO::FETCH_LAZY);
+						print "<div class=\"radiologist\"><strong>Radiologist:</strong> ".$names->first_name." ".$names->last_name." (".$results->radiologist_name.")</div>";
+						
+						print "<div class=\"testType\"><strong>Test Type:</strong> ".$results->test_type."</div>";
+						print "<div class=\"prescribingDate\"><strong>Prescribing Date:</strong> ".$results->prescribing_date."</div>";
+						print "<div class=\"testDate\"><strong>Test Date:</strong> ".$results->test_date."</div>";
+						print "<div class=\"diagnosis\"><strong>Diagnosis:</strong> ".$results->diagnosis."</div>";
+						print "<div class=\"description\"><strong>Description:</strong><br>".$results->description."</div>";
+					print "</div>";
 				print "</div>";
+				print "<hr>";
 			}
 			if ($i == 0)
-				print "<div class=\"no-results\">No results for your search. <a href=\"./home\">Back</a></div>";
+				print "<div class=\"no-results\">No results for your search.</div>";
 		?>
 	</div>
 </div>
@@ -94,11 +100,11 @@
 	$('[rel="recordImgThumb"]').click(function(){
 		$(this).hide();
 		$(this).parent().find('[rel="recordImgReg"]').show();
-		$(this).parent().find('[rel="recordImgFull"]').show();
+		$(this).parent().parent().find('[rel="recordImgFull"]').show();
 	});
 	$('[rel="recordImgReg"]').click(function(){
 		$(this).hide();
 		$(this).parent().find('[rel="recordImgThumb"]').show();
-		$(this).parent().find('[rel="recordImgFull"]').hide();
+		$(this).parent().parent().find('[rel="recordImgFull"]').hide();
 	});
 </script>
