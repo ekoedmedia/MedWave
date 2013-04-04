@@ -45,10 +45,6 @@ while (!$last_line) {
 		case "user:remove\n":
 			$console->removeUser();
 			break;
-		case "user:update\n":
-			$console->updatePerson();
-			break;
-
 		case "install\n":
 			$console->installDatabase();
 			break;

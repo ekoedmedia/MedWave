@@ -30,6 +30,7 @@
 	// Beginning of OLAP Functionality
 	if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['timeHorizonSet'])) {
 		
+		// Creates temporary table of required data.
 		$sqlCreateTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS olap_analysis 
 						  ENGINE=MEMORY AS (
 						  	SELECT COUNT(i.image_id) AS imgCount, 
@@ -59,6 +60,7 @@
 		if (isset($_GET['timeHorizonSet']) && $_GET['timeHorizonSet'] == "year")
 			$determineSQL .= "y";
 
+		// Determine what SQL statement should be used.
 		switch ($determineSQL) {
 			case "p":
 				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY patient_name";

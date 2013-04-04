@@ -86,6 +86,9 @@ namespace MedWave\Controller {
             }
         }
 
+        /**
+         * Add Family Doctor
+         */
         public function addDoctor()
         {
             $sql="INSERT INTO family_doctor (family_doctor,patient_name) 
@@ -94,6 +97,9 @@ namespace MedWave\Controller {
             $stmt->execute(array(":doctor"=>$_POST['doctor'],":patient"=>$_POST['patient']));
         }
 
+        /**
+         * Updates Family Doctor
+         */
         public function updateDoctor() 
         {
            
@@ -104,8 +110,11 @@ namespace MedWave\Controller {
 
         }
 
-       /*adds a user*/
-        public function addUser(){
+        /**
+         * Add User
+         */
+        public function addUser()
+        {
             
             $this->authCheck(); // Check if authenticated
             $error_4000 = new ErrorModel('UpdatePerson', '4000', 'First Name exceeds maximum length of 24 characters.');
@@ -245,6 +254,10 @@ namespace MedWave\Controller {
 
 
         }
+
+        /**
+         * Update Person information (via account page)
+         */
         public function updatePerson() 
         {
             $this->authCheck(); // Check if authenticated

@@ -3,6 +3,7 @@
  *  Function:   to create the initial database schema for the CMPUT 391 project,
  *              Winter Term, 2012
  *  Author:     Prof. Li-Yan Yuan
+ *  Modified:   Jeremy Smereka & Amir Salimi
  */
 DROP TABLE IF EXISTS persons;
 DROP TABLE IF EXISTS family_doctor;
