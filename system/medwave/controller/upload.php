@@ -49,6 +49,7 @@ namespace MedWave\Controller {
             
             $error_7000 = new ErrorModel('Upload', '7000', 'Some fields are blank left blank.');
             $error_7001 = new ErrorModel('Upload', '7001', 'Record ID is already in database.');
+            $error_7002 = new ErrorModel('Upload', '7002', 'Error uploading files, please try again.');
             $success = new SuccessModel('Upload', 'Successfully added Radiology Record to Database.');
             
             // Checks if post record id is set.
@@ -119,38 +120,41 @@ namespace MedWave\Controller {
                     $result = count($_FILES["uploadedfile"]["name"]);
                     for ($i = 0; $i < $result; $i++){
                         // Moves file temporarily
-                        move_uploaded_file($_FILES["uploadedfile"]["tmp_name"][$i], 'system/tmp/upload.jpeg');
+                        if (!move_uploaded_file($_FILES["uploadedfile"]["tmp_name"][$i], 'system/tmp/upload.jpeg')) {
+                            $_SESSION['error'] = serialize($error_7002);
+                            header("Location: /".$this->getBaseDir()."/uploading-module");
+                        } else {
+                            // Resize for Thumbnail Size
+                            $imagine = new \Imagine\Gd\Imagine();
+                            $thumbnail = $imagine->open('system/tmp/upload.jpeg');
+                            $thumbnail->resize(new \Imagine\Image\Box(100, 100));
 
-                        // Resize for Thumbnail Size
-                        $imagine = new \Imagine\Gd\Imagine();
-                        $thumbnail = $imagine->open('system/tmp/upload.jpeg');
-                        $thumbnail->resize(new \Imagine\Image\Box(100, 100));
+                            // Resize for Regular Size
+                            $normal = $imagine->open('system/tmp/upload.jpeg');
+                            $box = $normal->getSize();
+                            $normal->resize(new \Imagine\Image\Box(ceil($box->getWidth()/2), ceil($box->getHeight()/2)));
 
-                        // Resize for Regular Size
-                        $normal = $imagine->open('system/tmp/upload.jpeg');
-                        $box = $normal->getSize();
-                        $normal->resize(new \Imagine\Image\Box(ceil($box->getWidth()/2), ceil($box->getHeight()/2)));
+                            // Insert Data into Database for Images
+                            $sql = "INSERT INTO pacs_images (record_id, image_id, thumbnail, regular_size, full_size) 
+                                    VALUES (:record_id, :image_id, :thumb, :regular_size, :full_size)";
+                            $fullImg = file_get_contents('system/tmp/upload.jpeg');
+                            $stmt = $this->dbHandle->prepare($sql);
+                            $stmt->bindParam(':record_id', $record_id);
+                            $stmt->bindParam(':image_id', $i);
+                            $thumbnail_var = $thumbnail->get("jpeg");
+                            $stmt->bindParam(':thumb', $thumbnail_var);
+                            $normal_var = $normal->get("jpeg");
+                            $stmt->bindParam(':regular_size', $normal_var);
+                            $stmt->bindParam(':full_size', $fullImg);
 
-                        // Insert Data into Database for Images
-                        $sql = "INSERT INTO pacs_images (record_id, image_id, thumbnail, regular_size, full_size) 
-                                VALUES (:record_id, :image_id, :thumb, :regular_size, :full_size)";
-                        $fullImg = file_get_contents('system/tmp/upload.jpeg');
-                        $stmt = $this->dbHandle->prepare($sql);
-                        $stmt->bindParam(':record_id', $record_id);
-                        $stmt->bindParam(':image_id', $i);
-                        $thumbnail_var = $thumbnail->get("jpeg");
-                        $stmt->bindParam(':thumb', $thumbnail_var);
-                        $normal_var = $normal->get("jpeg");
-                        $stmt->bindParam(':regular_size', $normal_var);
-                        $stmt->bindParam(':full_size', $fullImg);
+                            try {
+                                $stmt->execute();
+                            } catch (\Exception $e) {
+                                print $e->getMessage();
+                            }
 
-                        try {
-                            $stmt->execute();
-                        } catch (\Exception $e) {
-                            print $e->getMessage();
+                            unlink('system/tmp/upload.jpeg');
                         }
-
-                        unlink('system/tmp/upload.jpeg');
                     }
 
                     $_SESSION['success'] = serialize($success);

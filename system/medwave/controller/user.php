@@ -86,12 +86,14 @@ namespace MedWave\Controller {
             }
         }
 
-        public function addDoctor(){
+        public function addDoctor()
+        {
             $sql="INSERT INTO family_doctor (family_doctor,patient_name) 
             VALUES(:doctor,:patient)";
             $stmt = $this->dbHandle->prepare($sql);
-            stmt->execute(array(":doctor"=>$_POST['doctor'],":patient"=>$_POST['patient']));
+            $stmt->execute(array(":doctor"=>$_POST['doctor'],":patient"=>$_POST['patient']));
         }
+
         public function updateDoctor() 
         {
            
@@ -152,10 +154,12 @@ namespace MedWave\Controller {
                 $stmt->execute();
 
                 $sql = "INSERT INTO users SET (user_name,passowrd,class,date_registered) VALUES
-                    (:username,:password,:class,date_registered);
+                    (:username,:password,:class,date_registered)";
                 $stmt = $this->dbHandle->prepare($sql);
-                $stmt->execute(array(:class"=>$_POST['role'],":password"=>$_POST['password'],":username"=>$_POST['username'],
-                    ":date_registered"=>$_POST['date_registered']));
+                $stmt->execute(array(":class"=>$_POST['role'],
+                                     ":password"=>$_POST['password'],
+                                     ":username"=>$_POST['username'],
+                                     ":date_registered"=>$_POST['date_registered']));
 
 
                 print $success->getMessage();
