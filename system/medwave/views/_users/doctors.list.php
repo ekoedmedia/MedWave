@@ -14,7 +14,7 @@ $stmt = $dbcon->prepare($sql);
 $stmt->execute();
 ?>
 
-<table border="1" id="doctor_table">
+<table class="table table-striped table-hover table-bordered table-condensed" id="doctor_table">
 
     <tr>
         <th>Doctor</th><th>Patient</th><th>Controls</th>

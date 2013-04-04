@@ -14,13 +14,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
+	<title>MedWave | Data Analysis</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="media/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
 	<link href="media/select2/select2.css" rel="stylesheet" type="text/css">
 	<link href="media/jquery-ui/css/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="media/js/jquery.min.js"></script>
 	<script src="media/select2/select2.min.js" type="text/javascript"></script>
 	<script src="media/jquery-ui/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="media/bootstrap/js/bootstrap.min.js"></script>
 	<script>
 		$(document).ready(function() { 
 			$("[rel='select']").select2();
@@ -42,17 +45,23 @@
 	<header class="header">
 		<?php include '_base/auth.header.php'; ?>
 	</header>
-	<div class="content">
+	<div class="container-wide">
+		<ul class="nav nav-tabs">
+            <li class="pull-right active"><a href="./analysis">Data Analysis</a></li>
+            <li class="pull-right"><a href="./report-gen">Report Generating</a></li>
+            <li class="pull-right"><a href="./user-list">Manage Users</a></li>
+        </ul>
+
 	    <div class="content-wrapper">
-	    	<h2>Data Analysis OLAP | "You can name anything, anything" - Amir</h2>
+	    	<h2>Data Analysis</h2>
 	    	<div class="analysis-form">
 	    		<form method="GET">
 	    			<div>
-	    				<input type="checkbox" name="patientName" id="patientName" <?php print (isset($patientChecked) ? $patientChecked : ""); ?>><label for="patientName">Patient Name</label>
-	    				<input type="checkbox" name="testType" id="testType" <?php print (isset($testTypeChecked) ? $testTypeChecked : ""); ?>><label for="testType">Test Type</label>
-	    				<input type="checkbox" name="timeHorizon" id="timeHorizonCheckbox" <?php print (isset($timeChecked) ? $timeChecked : ""); ?>><label for="timeHorizonCheckbox">Time</label>
+	    				<label for="patientName" class="checkbox inline"><input type="checkbox" name="patientName" id="patientName" <?php print (isset($patientChecked) ? $patientChecked : ""); ?>>Patient Name</label>
+	    				<label for="testType" class="checkbox inline"><input type="checkbox" name="testType" id="testType" <?php print (isset($testTypeChecked) ? $testTypeChecked : ""); ?>>Test Type</label>
+	    				<label for="timeHorizonCheckbox" class="checkbox inline"><input type="checkbox" name="timeHorizon" id="timeHorizonCheckbox" <?php print (isset($timeChecked) ? $timeChecked : ""); ?>>Time</label>
 	    			</div>
-	    			<div style="display:<?php print $timeHorizon; ?>;" id="timeHorizon">
+	    			<div style="display:<?php print $timeHorizon; ?>; margin-top:10px;" id="timeHorizon">
 	    				<label for="timeHorizonSet">Timeframe:</label>
 	    				<select name="timeHorizonSet" id="timeHorizonSet" <?php print (isset($timeHorizonSet) ? $timeHorizonSet : ""); ?>>
 	    					<option value="week" <?php print (isset($weekSelected) ? $weekSelected : ""); ?>>Week</option>
@@ -60,16 +69,17 @@
 	    					<option value="year" <?php print (isset($yearSelected) ? $yearSelected : ""); ?>>Year</option>
 	    				</select>
 	    			</div>
-	    			<div>
-	    				<input type="submit" value="Analyze">
+	    			<div style="margin-top:20px;">
+	    				<input type="submit" class="btn" value="Analyze">
 	    			</div>
 	    		</form>
 	    	</div>
+	    	<hr>
 	    	<div class="analysis-results" id="results">
 	    		<?php 
 	    			$i = 0;
 	    			if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['timeHorizon'])) {
-	    				print "<table>";
+	    				print "<table class=\"table table-striped table-hover table-bordered table-condensed\">";
 	    				print "<tr>
 	    					       <th>Image Count</th>";
 	    				if (isset($patientChecked)) print "<th>Patient</th>";

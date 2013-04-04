@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
+	<title>MedWave | Account</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="media/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link type="text/css" rel="stylesheet" href="media/css/base.styles.css">

@@ -19,7 +19,7 @@
             if (is_null($result->nameF) || is_null($result->nameL)){
             	$name = $result->username;
             } else {
-            	$name = $result->nameF." ".$result->nameL;
+            	$name = $result->nameF." ".$result->nameL." (".$result->username.")";
             }
             print  "<td>".$name."</td>
             		<td>".$result->address."</td>
@@ -30,9 +30,9 @@
 
         }
         if ($i == 0) {
-            print "No reports found for time period from: <b>".$from."</b> to: <b>".$to."</b>";
+            print "<caption style=\"margin-bottom:10px;\">No reports found for time period from: <b>".$from."</b> to: <b>".$to."</b></caption>";
         } else {
-            print "Reports found for time period from: <b>".$from."</b> to: <b>".$to."</b>";
+            print "<caption style=\"margin-bottom:10px;\">Reports found for time period from: <b>".$from."</b> to: <b>".$to."</b></caption>";
         }
     } catch(\PDOException $e) {
         print $e->getMessage();
