@@ -65,21 +65,22 @@ namespace MedWave\Controller {
                     header("Location: /".$this->getBaseDir()."/");
                 } else {
                     // Querying of Database to See if User Exists
-                    $sql = "SELECT * FROM users WHERE user_name=:username AND password=:password"; ##TODO: Change query to join with persons table
+                    $sql = "SELECT COUNT(*) AS count, * FROM users WHERE user_name=:username AND password=:password"; ##TODO: Change query to join with persons table
                     $stmt = $this->dbHandle->prepare($sql);
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':password', $password);
                     $stmt->execute();
+                    $results = $stmt->fetch(\PDO::FETCH_LAZY);
+
                     // If count is 0, then throw an error
-                    if ($stmt->rowCount() == 0) {
+                    if ($results->count == 0) {
                         $_SESSION['error'] = serialize($error_1001);
                         header("Location: /".$this->getBaseDir()."/");
                     } else {
                         // Get the result and head to destination
-                        $result = $stmt->fetch(\PDO::FETCH_LAZY);
                         $_SESSION['logged'] = true;
-                        $_SESSION['username'] = $result->user_name;
-                        $_SESSION['role'] = $result->class;
+                        $_SESSION['username'] = $results->user_name;
+                        $_SESSION['role'] = $results->class;
                         header("Location: /".$this->getBaseDir()."/".$this->getDestination());
                     }
                 }
@@ -145,10 +146,11 @@ namespace MedWave\Controller {
                 print $error_4004->getMessage();
             // Everything is good, insert or update db
             } else {
-                $sql = "SELECT * FROM persons WHERE user_name=:name";
+                $sql = "SELECT COUNT(*) AS count FROM persons WHERE user_name=:name";
                 $stmt = $this->dbHandle->prepare($sql);
                 $stmt->execute(array(':name' => $_POST['username']));
-                if ($stmt->rowCount() == 1){
+                $results = $stmt->fetch(\PDO::FETCH_LAZY);
+                if ($results->count == 1){
                     $sql = "UPDATE persons SET first_name=:fname, last_name=:lname, address=:address, email=:email, phone=:phone WHERE user_name=:name";
                 } else {
                     $sql = "INSERT INTO persons (first_name, last_name, address, email, phone, user_name) VALUES (:fname, :lname, :address, :email, :phone, :name)";

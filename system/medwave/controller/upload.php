@@ -58,13 +58,13 @@ namespace MedWave\Controller {
                 header("Location: /".$this->getBaseDir()."/uploading-module");
             } else {
                 $record_id = trim($_POST["record_id"]);
-                $sql = "SELECT record_id FROM radiology_record WHERE record_id=:id";
+                $sql = "SELECT COUNT(record_id) AS count FROM radiology_record WHERE record_id=:id";
                 $stmt = $this->dbHandle->prepare($sql);
                 $stmt->execute(array(":id" => $record_id));
-                $result = $stmt->rowCount();
+                $result = $stmt->fetch(\PDO::FETCH_LAZY);
 
                 // Check if record id already exists in Database
-                if ($result == 1) {
+                if ($result->count == 1) {
                     $_SESSION['error'] = serialize($error_7001);
                     header("Location: /".$this->getBaseDir()."/uploading-module");
                 } else {
@@ -162,12 +162,6 @@ namespace MedWave\Controller {
                 }   
             }
         }
-
-        /**
-         * Takes in User Object and persists to 
-         * database provided the data is pertinent to it.
-         */
-        public function updateData() {}
 
 
         /**

@@ -68,14 +68,15 @@
 	    	<div class="analysis-results" id="results">
 	    		<?php 
 	    			$i = 0;
-    				print "<table>";
-    				print "<tr>
-    					       <th>Image Count</th>";
-    				if (isset($patientChecked)) print "<th>Patient</th>";
-    				if (isset($testTypeChecked)) print "<th>Test Type</th>";
-    				if (isset($timeChecked)) print "<th>Time</th>";
-    				print "</tr>";
-
+	    			if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['timeHorizon'])) {
+	    				print "<table>";
+	    				print "<tr>
+	    					       <th>Image Count</th>";
+	    				if (isset($patientChecked)) print "<th>Patient</th>";
+	    				if (isset($testTypeChecked)) print "<th>Test Type</th>";
+	    				if (isset($timeChecked)) print "<th>Time</th>";
+	    				print "</tr>";
+    				}
     				while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
     					$i = 1;
     					print "<tr>";

@@ -13,7 +13,6 @@
 		$timeHorizonSet = "";
 	} else {
 		$timeHorizonSet = "disabled";	
-		$timeChecked = "";
 		$timeHorizon = "none";
 	}
 	
