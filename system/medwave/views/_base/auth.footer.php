@@ -1,10 +1,8 @@
-<div class="footer-wrapper">
-    <div class="footer">
-		<div class="footer__center">
-			<div class="footer__nav">
-				<a href="./help" class="btn">help</a>
-			    <a href="./about" class="btn">about</a>			    
-			</div>
-		</div>
-    </div>
+<div class="navbar navbar-fixed-bottom">
+	<div class="container-wide">
+		<ul class="nav pull-right">
+			<li><a href="./help">Help</a></li>
+    		<li><a href="./about">About</a></li>
+    	</ul>
+    </div>		    
 </div>

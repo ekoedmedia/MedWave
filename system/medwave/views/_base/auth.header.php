@@ -1,18 +1,32 @@
-<div class="header-wrapper">
-    <div class="header">
-    	<div class="header__left">
-    		<img class="logo" width="200" height="200" src="http://fc08.deviantart.net/fs70/f/2012/178/d/e/de957d5233a90be43dc68aba70903713-d55159s.jpg">
-    	</div>
-		<div class="header__right">
-			<div class="header__username">Hello, <?php print $username; ?></div>
-			<div class="header__nav">
-				<a href="./home" class="btn">Home</a>
-			    <a href="./account" class="btn">Account</a>
-			    <form action="./?c=user&d=./" method="POST">
-			    	<input type="submit" value="Logout" class="btn">
-			    	<input type="hidden" name="CMD" value="unauthenticate">
-			    </form>
+<?php 
+	// Minor PHP for Style Purposes
+	$request = $_SERVER['REQUEST_URI']; 
+	if (false !== strpos($request, 'home')) {
+		$home = "active";
+		$account = "";
+	} elseif (false !== strpos($request, 'account')) {
+		$home = "";
+		$account = "active";
+	} else {
+		$home = "";
+		$account = "";
+	}
+?>
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">Hello, <?php print $username; ?></a>
+				<ul class="nav">
+					<li class="<?php print $home; ?>"><a href="./home" title="Home">Home</a></li>
+					<li class="<?php print $account; ?>"><a href="./account" title="Account">Account</a></li>
+				</ul>
+				<form action="./?c=user&d=./" method="POST" class="pull-right navbar-form">
+	    			<input type="submit" value="Logout" class="btn btn-primary">
+	    			<input type="hidden" name="CMD" value="unauthenticate">
+	    		</form>
 			</div>
 		</div>
-    </div>
+	</div>
 </div>

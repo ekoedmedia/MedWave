@@ -18,7 +18,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
+	<title>MedWave | Home</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="media/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
 	<link href="media/select2/select2.css" rel="stylesheet" type="text/css">
 	<link href="media/jquery-ui/css/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css">
@@ -31,12 +33,13 @@
 			$("[rel='date']").datepicker();
 		});
 	</script>
+	<script src="media/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<header class="header">
 		<?php include '_base/auth.header.php'; ?>
 	</header>
-	<div class="content">
+	<div class="container-wide">
 	    <?php include $fileToInclude; ?>	
 	</div>
 	<footer class="footer">

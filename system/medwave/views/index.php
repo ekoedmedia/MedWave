@@ -2,42 +2,48 @@
 <html>
 <head>
 	<title>MedWave | Waves for the Future</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="media/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link type="text/css" rel="stylesheet" href="media/css/base.styles.css">
+	<script src="media/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<header class="header">
-		<!-- LOGO TO GO HERE -->
-	</header>
-	<div class="content">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">MedWave</a>
+				<ul class="nav">
+					<li class="active"><a href="./" title="Home">Home</a></li>
+					<li><a href="./report" title="Report">Report</a></li>
+					<li><a href="./about" title="About">About</a></li>
+					<li><a href="http://github.com/ekoedmedia/MedWave" title="Github">GitHub</a></li>
+				</ul>
+				<form action="?c=user&d=home" method="POST" class="navbar-form pull-right">
+					<input type="text" name="user_name" class="input-small" placeholder="Username" id="username">
+					<input type="password" name="password" class="input-small" placeholder="Password" id="password">
+					<input type="submit" value="Submit" class="btn">
+					<input type="hidden" name="CMD" value="authenticate">
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<?php include "_base/form.success.php"; ?>
+		<?php include "_base/form.error.php"; ?>
+		<div class="page-header">
+			<h1>MedWave | <small>Waves for the Future</small></h1>
+		</div>
 		<div class="description">
-			<p>
+			<p class="lead">
 				MedWave provides patients, doctors, and radiologists a single point of entry to 
 				start sharing radiological information between eachother. MedWave simplifies your 
 				life by giving you what you need, when you need it.
 			</p>
-			<p>
-				Contact your family doctor about using MedWave today!
+			<p class="text-center lead">
+				<strong>Contact your family doctor about using MedWave today!</strong>
 			</p>
 		</div>
-		<div class="form--login">
-			<?php include "_base/form.success.php"; ?>
-			<?php include "_base/form.error.php"; ?>
-			<form action="?c=user&d=home" method="POST">
-				<label for="username">Username</label> <input type="text" name="user_name" id="username"><br>
-				<label for="password">Password</label> <input type="password" name="password" id="password"><br>
-				<input type="submit" value="Submit" class="btn--submit">
-				<a href="" title="">Forgot my Password</a>
-				<input type="hidden" name="CMD" value="authenticate">
-			</form>
-		</div>
 	</div>
-	<footer class="footer">
-		<ul class="nav">
-			<li><a href="" class="btn" title="">Report</a></li>
-			<li><a href="" class="btn" title="">About</a></li>
-			<li><a href="" class="btn" title="">GitHub</a></li>
-		</ul>
-	</footer>
 </body>
 </html>
 
