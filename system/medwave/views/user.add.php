@@ -14,62 +14,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>add a user</title>
-	<link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
+	<title>MedWave | Add User</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="media/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="media/css/base.styles.css" rel="stylesheet" type="text/css">
+    <link href="media/jquery-ui/css/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="media/js/jquery.min.js"></script>
+    <script src="media/jquery-ui/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="media/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() { 
+            $("[rel='date']").datepicker();
+        });
+    </script>
 </head>
-	<body>
-		<form>
-			<label>username**<label>
-			<input type="text" name="sda" id="username">
+<body>
+	<header class="header">
+		<?php include '_base/auth.header.php'; ?>
+	</header>
+	<div class="container-wide">
+		<ul class="nav nav-tabs">
+            <li class="active"><a href="./user.add"><i class="icon-plus-sign"></i> Add User</a></li>
+            <li class="pull-right"><a href="./analysis">Data Analysis</a></li>
+            <li class="pull-right"><a href="./report-gen">Report Generating</a></li>
+            <li class="pull-right"><a href="./user-list">Manage Users</a></li>
+        </ul>
+
+        <?php include "_base/form.success.php"; ?>
+        <?php include "_base/form.error.php"; ?>
+		<form method="POST" action="./?c=user&d=user.add" style="margin-top:20px;">
 			<div>
-			<label>password<label>
-			<input type="text" id="password">
+				<label for="username">Username<label>
+				<input type="text" name="username" id="username" required>
+			</div>
 			<div>
-			<label>registration date<label>
-			<input type="text" id="reg_date">
+				<label for="password">Password<label>
+				<input type="password" id="password" name="password" required>
+			</div>
 			<div>
-			<label>First name<label>
-			<input type="text" id="first_name">
+				<label for="reg_date">Registration Date<label>
+				<input type="text" id="reg_date" rel="date" name="date_registered" value="<?php print date("d/m/Y"); ?>" required>
+			</div>
 			<div>
-			<label>Last name<label>
-			<input type="text" id="last_name">
+				<label for="first_name">First Name<label>
+				<input type="text" id="first_name" name="fname">
+			</div>
 			<div>
-			<label>Email<label>
-			<input type="text" id="email">
+				<label for="last_name">Last Name<label>
+				<input type="text" id="last_name" name="lname">
+			</div>
 			<div>
-			<label>Address<label>
-			<input type="text" id="address">
+				<label for="email">Email<label>
+				<input id="email" type="email" name="email" placeholder="example@domain.com" required>
+			</div>
 			<div>
-			<label>phone #<label>
-			<input type="text" id="phone_number">			
-			<td><select id="role-dropdown">
-							<option>Admin</option>
-							<option>Doctor</option>
-							<option>Patient</option>
-							<option>Radiologist</option>
-						</select></td>
+				<label for="address">Address<label>
+				<input type="text" id="address" name="address">
+			</div>
 			<div>
-            <button type="button" name ="add_user" onclick="UserAdd()">Add user</button>
-	
+				<label for="phone">Phone<label>
+				<input type="text" id="phone" name="phone" placeholder="5551234567">			
+			</div>
+			<div>
+				<label for="role">Role</label>
+				<select id="role" name="role" required>
+					<option value="a">Admin</option>
+					<option value="d">Doctor</option>
+					<option value="p">Patient</option>
+					<option value="r">Radiologist</option>
+				</select>
+			</div>
+			<div>
+	        	<button type="submit" class="btn"><i class="icon-plus-sign"></i> Add user</button>
+	        	<input type="hidden" name="CMD" value="addUser">
+			</div>
 		</form>
-
-		<script type="text/javascript" src="media/js/jquery.min.js">
-	function UserAdd(){
-				var username = document.getElementById('username').value;
-				var passoword = document.getElementById('password').value;
-				var reg_date=document.getElementById('reg_date').value;
-				var first_name=document.getElementById('first_name').value;
-				var last_name=document.getElementById('last_name').value;
-				var email=document.getElementById('email').value;
-				var address=document.getElementById('address').value;
-				var phone_number=document.getElementById('phone_number').value;
-				var role=document.getElementById('role-dropdown').value;
-
-			      $.post("./?c=user",{CMD: "addDoctor",uname:username,pass:password,
-			  	regdate:reg_date,fname:first_name,lname:last_name,email:email,address:address
-			  	,phone:phone_number,role:role});
-		
-		}
-		</script>
-	<body>
+	</div>
+	<footer class="footer">
+		<?php include '_base/auth.footer.php'; ?>
+	</footer>
+<body>
 </html>

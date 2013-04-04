@@ -23,21 +23,18 @@ $stmt->execute();
         $rowNum=0;
         while ($result = $stmt->fetch(\PDO::FETCH_LAZY)) {
               print "<tr id=".$rowNum.">";
-                print "<td><div id=\"doctor-name".$rowNum."\" contenteditable>".$result->doctor_name."</div></td>";
-                print "<td><div id=\"patient-name".$rowNum."\"contenteditable>".$result->patient_name."</div>";              
+                print "<td><div id=\"doctor-name".$rowNum."\">".$result->doctor_name."</div></td>";
+                print "<td><div id=\"patient-name".$rowNum."\">".$result->patient_name."</div>";              
                 print "<div id=\"old-patient-name".$rowNum."\" style=\"display:none;\">".$result->patient_name."</div></td>";              
 
                 print "<td class=\"user-management-controls\">
-                      <div class=\"update-doctor-form\">                        
-                            <input type=\"button\" class=\"update-user-icon\" onclick=\"familyDoctorUpdate(".$rowNum.");\">
-                        </div>
-                      
-                        <form method=\"post\" action=\"./?c=user&d=users\" 
+                        <form method=\"post\" action=\"./?c=user&d=doctor-list\" 
                         onsubmit=\"return window.confirm('Are you sure you want to delete entry for doctor: ".$result->doctor_name." ?');
                         \" class=\"delete-user-form\">
-                            <input type=\"submit\" class=\"delete-user-icon\" value=\"\">
-                            <input type=\"hidden\" name=\"user\" value=\"".$result->doctor_name."\">
-                            <input type=\"hidden\" name=\"CMD\" value=\"removeUser\">
+                            <button type=\"submit\" class=\"btn\"><i class=\"icon-trash\"></i></button>
+                            <input type=\"hidden\" name=\"doctor\" value=\"".$result->doctor_name."\">
+                            <input type=\"hidden\" name=\"patient\" value=\"".$result->patient_name."\">
+                            <input type=\"hidden\" name=\"CMD\" value=\"removeFamilyDoctor\">
                         </form>
                      </td>";
   

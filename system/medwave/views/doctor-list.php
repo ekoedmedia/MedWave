@@ -35,8 +35,10 @@
             <li><a href="./user-list">User List</a></li>
             <li class="active"><a href="./doctor-list">Doctor List</a></li>
         </ul>
+        <?php include "_base/form.success.php"; ?>
+        <?php include "_base/form.error.php"; ?>
 
-        <div class="users" id="user-list">
+        <div class="users" id="user-list" style="margin-top:20px;">
             <?php include "_users/doctors.list.php"; ?>
         </div>
     </div>

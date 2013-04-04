@@ -92,23 +92,54 @@ namespace MedWave\Controller {
          */
         public function addDoctor()
         {
-            $sql="INSERT INTO family_doctor (family_doctor,patient_name) 
-            VALUES(:doctor,:patient)";
-            $stmt = $this->dbHandle->prepare($sql);
-            $stmt->execute(array(":doctor"=>$_POST['doctor'],":patient"=>$_POST['patient']));
+            $this->authCheck(); // Check if Authenticated
+            $error_10000 = new ErrorModel('Add Doctor', '10000', 'Doctor or Patient left blank');
+            $error_10001 = new ErrorModel('Add Doctor', '10001', 'Doctor is already Family Doctor of Patient');
+            $success = new SuccessModel('Add Doctor', 'Successfully added Family Doctor');
+
+            if (!isset($_POST['patient']) || !isset($_POST['doctor'])) {
+                $_SESSION['error'] = serialize($error_10000);
+                header("Location: /".$this->getBaseDir()."/doctor.add");
+            } else {
+                $sql = "SELECT COUNT(*) AS count FROM family_doctor WHERE patient_name=:patient AND doctor_name=:doctor";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(":doctor" => $_POST['doctor'], ":patient" => $_POST['patient']));
+                $result = $stmt->fetch(\PDO::FETCH_LAZY);
+                if ($result->count != 0){
+                    $_SESSION['error'] = serialize($error_10001);
+                    header("Location: /".$this->getBaseDir()."/doctor.add");
+                } else {
+                    $sql = "INSERT INTO family_doctor (doctor_name, patient_name) VALUES (:doctor, :patient)";
+                    $stmt = $this->dbHandle->prepare($sql);
+                    $stmt->execute(array(":doctor" => $_POST['doctor'],
+                                         ":patient" => $_POST['patient']));
+                    $_SESSION['success'] = serialize($success);
+                    header("Location: /".$this->getBaseDir()."/".$this->getDestination());
+                }
+            }
         }
 
         /**
-         * Updates Family Doctor
+         * Removes user from account list
          */
-        public function updateDoctor() 
+        public function removeFamilyDoctor()
         {
-           
-                $sql = "UPDATE family_doctor SET patient_name=:patient WHERE doctor_name=:doctor AND patient_name=:oldpatient";
-                $stmt = $this->dbHandle->prepare($sql);
-                $stmt->execute(array(":patient" => $_POST['patient'],":doctor" => $_POST['doctor'],
-                    ":oldpatient" => $_POST['oldpatient']));
+            $this->authCheck(); // Check if Authenticated
+            $error_11000 = new ErrorModel('RemoveFamilyDoctor', '11000', 'User not valid.');
+            $success = new SuccessModel('RemoveFamilyDoctor', 'Successfully removed the user: '.$_POST['user']);
 
+            // Checks if is valid, and is not current user
+            if (!isset($_POST['patient']) || !isset($_POST['doctor'])){
+                $_SESSION['error'] = serialize($error_11000);
+                header("Location: /".$this->getBaseDir()."/doctor.add");
+            } else {
+                $sql = "DELETE FROM family_doctor WHERE patient_name=:patient AND doctor_name=:doctor";
+                $stmt = $this->dbHandle->prepare($sql);
+                $stmt->execute(array(":patient" => $_POST['patient'], ":doctor" => $_POST['doctor']));
+
+                $_SESSION['success'] = serialize($success);
+                header('Location: /'.$this->getBaseDir().'/'.$this->getDestination());
+            }
         }
 
         /**
@@ -118,32 +149,49 @@ namespace MedWave\Controller {
         {
             
             $this->authCheck(); // Check if authenticated
-            $error_4000 = new ErrorModel('UpdatePerson', '4000', 'First Name exceeds maximum length of 24 characters.');
-            $error_4001 = new ErrorModel('UpdatePerson', '4001', 'Last Name exceeds maximum length of 24 characters.');
-            $error_4002 = new ErrorModel('UpdatePerson', '4002', 'Address exceeds maximum length of 128 characters.');
-            $error_4003 = new ErrorModel('UpdatePerson', '4003', 'Email exceeds maximum length of 128 characters.');
-            $error_4004 = new ErrorModel('UpdatePerson', '4004', 'Email not in valid format: user@domain.com');
-            $error_4005 = new ErrorModel('UpdatePerson', '4005', 'Phone number has maximum length of 10 digits.');
-            $success = new SuccessModel('UpdatePerson', 'You have updated your account information successfully.');            
+            $error_4000 = new ErrorModel('addUser', '4000', 'First Name exceeds maximum length of 24 characters.');
+            $error_4001 = new ErrorModel('addUser', '4001', 'Last Name exceeds maximum length of 24 characters.');
+            $error_4002 = new ErrorModel('addUser', '4002', 'Address exceeds maximum length of 128 characters.');
+            $error_4003 = new ErrorModel('addUser', '4003', 'Email exceeds maximum length of 128 characters.');
+            $error_4004 = new ErrorModel('addUser', '4004', 'Email not in valid format: user@domain.com');
+            $error_4005 = new ErrorModel('addUser', '4005', 'Phone number has maximum length of 10 digits.');
+            $error_4006 = new ErrorModel('addUser', '4006', 'Email is already registered.');
+            $error_4006 = new ErrorModel('addUser', '4007', 'User already registered.');
+            $success = new SuccessModel('addUser', 'You have added the account successfully.');            
+
+            $sql = "SELECT COUNT(*) AS count FROM persons WHERE email=:email AND user_name<>:user";
+            $stmt = $this->dbHandle->prepare($sql);
+            $stmt->execute(array(':email' => $_POST['email'],
+                                 ':user' => $_POST['username']));
+            $results = $stmt->fetch(\PDO::FETCH_LAZY);
 
             // First Name length check
             if ($_POST['fname'] != "" && strlen(trim($_POST['fname'])) > 24) {
-                print $error_4000->getMessage();
+                $_SESSION['error'] = serialize($error_4000);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Last Name length check
             } elseif ($_POST['lname'] != "" && strlen(trim($_POST['lname'])) > 24) {
-                print $error_4001->getMessage();
+                $_SESSION['error'] = serialize($error_4001);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Address length check
             } elseif ($_POST['address'] != "" && strlen(trim($_POST['address'])) > 128) {
-                print $error_4002->getMessage();
+                $_SESSION['error'] = serialize($error_4002);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Email length check
             } elseif ($_POST['email'] != "" && strlen(trim($_POST['email'])) > 128) {
-                print $error_4003->getMessage();
+                $_SESSION['error'] = serialize($error_4003);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Phone number length & valid check
             } elseif ($_POST['phone'] != "" && (strlen(trim($_POST['phone'])) > 10 || !is_numeric($_POST['phone']))) {
-                print $error_4005->getMessage();
+                $_SESSION['error'] = serialize($error_4005);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Email valid check
             } elseif ($_POST['email'] != "" && !filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL)) {
-                print $error_4004->getMessage();
+                $_SESSION['error'] = serialize($error_4004);
+                header("Location: /".$this->getBaseDir()."/user.add");
+            } elseif ($results->count > 0) {
+                $_SESSION['error'] = serialize($error_4006);
+                header("Location: /".$this->getBaseDir()."/user.add");
             // Everything is good, insert or update db
             } else {
                 $sql = "SELECT COUNT(*) AS count FROM persons WHERE user_name=:name";
@@ -151,33 +199,31 @@ namespace MedWave\Controller {
                 $stmt->execute(array(':name' => $_POST['username']));
                 $results = $stmt->fetch(\PDO::FETCH_LAZY);
                 if ($results->count == 1){
-                    $sql = "UPDATE persons SET first_name=:fname, last_name=:lname, address=:address, email=:email, phone=:phone WHERE user_name=:name";
+                    $_SESSION['error'] = serialize($error_4007);
+                    header("Location: /".$this->getBaseDir()."/user.add");
                 } else {
+                    $sql = "INSERT INTO users (user_name, password, class, date_registered) VALUES (:username, :password, :class, :date_registered)";
+                    $stmt = $this->dbHandle->prepare($sql);
+                    $date = strtotime($_POST['date_registered']);
+                    $stmt->execute(array(":class" => $_POST['role'],
+                                         ":password" => $_POST['password'],
+                                         ":username" => $_POST['username'],
+                                         ":date_registered" => date("Y-m-d", $date)));
+
                     $sql = "INSERT INTO persons (first_name, last_name, address, email, phone, user_name) VALUES (:fname, :lname, :address, :email, :phone, :name)";
+                    $stmt = $this->dbHandle->prepare($sql);
+                    $stmt->bindParam(':fname', $_POST['fname']);
+                    $stmt->bindParam(':lname', $_POST['lname']);
+                    $stmt->bindParam(':address', $_POST['address']);
+                    $stmt->bindParam(':email', $_POST['email']);
+                    $stmt->bindParam(':phone', $_POST['phone']);
+                    $stmt->bindParam(':name', $_POST['username']);
+                    $stmt->execute();
+
+                    $_SESSION['success'] = serialize($success);
+                    header("Location: /".$this->getBaseDir()."/".$this->getDestination());
                 }
-                $stmt = $this->dbHandle->prepare($sql);
-                $stmt->bindParam(':fname', $_POST['fname']);
-                $stmt->bindParam(':lname', $_POST['lname']);
-                $stmt->bindParam(':address', $_POST['address']);
-                $stmt->bindParam(':email', $_POST['email']);
-                $stmt->bindParam(':phone', $_POST['phone']);
-                $stmt->bindParam(':name', $_POST['username']);
-                $stmt->execute();
-
-                $sql = "INSERT INTO users SET (user_name,passowrd,class,date_registered) VALUES
-                    (:username,:password,:class,date_registered)";
-                $stmt = $this->dbHandle->prepare($sql);
-                $stmt->execute(array(":class"=>$_POST['role'],
-                                     ":password"=>$_POST['password'],
-                                     ":username"=>$_POST['username'],
-                                     ":date_registered"=>$_POST['date_registered']));
-
-
-                print $success->getMessage();
             }
-
-
-
         }
         
         /**
@@ -371,30 +417,6 @@ namespace MedWave\Controller {
                 $_SESSION['success'] = serialize($success);
 
                 header("Location: /".$this->getBaseDir()."/".$this->getDestination());
-            }
-        }
-
-
-        /**
-         * Removes user from account list
-         */
-        public function removeUser()
-        {
-            $this->authCheck(); // Check if Authenticated
-            $error_6000 = new ErrorModel('RemoveUser', '6000', 'User not valid.');
-            $success = new SuccessModel('RemoveUser', 'Successfully removed the user: '.$_POST['user']);
-
-            // Checks if is valid, and is not current user
-            if (!isset($_POST['user']) || $_POST['user'] == "" || $_POST['user'] == $_SESSION['username']){
-                $_SESSION['error'] = serialize($error_6000);
-                header("Location: /".$this->getBaseDir()."/users");
-            } else {
-                $sql = "DELETE FROM users WHERE user_name=:name";
-                $stmt = $this->dbHandle->prepare($sql);
-                $stmt->execute(array(":name" => $_POST['user']));
-
-                $_SESSION['success'] = serialize($success);
-                header('Location: /'.$this->getBaseDir().'/'.$this->getDestination());
             }
         }
 

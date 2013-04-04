@@ -24,7 +24,7 @@ $stmt->execute();
 
 <table id="userTable" class="table table-striped table-hover table-bordered table-condensed">
     <tr>
-        <th>Username</th><!-- <th>password</th> --><th>Registration Date</th><th>First Name</th><th>Last Name</th><th>Email</th>
+        <th>Username</th><th>Password</th><th>Registration Date</th><th>First Name</th><th>Last Name</th><th>Email</th>
         <th>Address</th><th>Phone #</th><th>Role</th><th>Controls</th>
     </tr>
     <?php 
@@ -34,7 +34,7 @@ $stmt->execute();
             print "<tr id=".$rowNum.">";
             
                 print "<td><div id=\"userName".$rowNum."\" >".$result->username."</div></td>";
-                //print "<td><input type=\"password\" id=\"password".$rowNum."\" value=\"".$result->password."\" class=\"input-small\"></td>";
+                print "<td><input type=\"password\" id=\"password".$rowNum."\" value=\"".$result->password."\" class=\"input-small\"></td>";
                 print "<td><input type=\"text\" value=\"".str_replace('-', '/', $result->date_registered)."\" rel=\"date\" id=\"date_registered".$rowNum."\" class=\"input-small\"></td>";             
                 print "<td><input type=\"text\" id=\"fName".$rowNum."\" value=\"".$result->fname."\" class=\"input-small\"></td>";
                 print "<td><input type=\"text\" id=\"lName".$rowNum."\" value=\"".$result->lname."\" class=\"input-small\"></td>";
@@ -77,16 +77,6 @@ $stmt->execute();
                                <button class=\"btn\" onclick=\"updateUser(".$rowNum.");\"><i class=\"icon-arrow-up\"></i></button>
                            </div>
                            ";
-                if ($result->username != $_SESSION['username']) {
-                    print "<form method=\"post\" action=\"./?c=user&d=users\" 
-                          onsubmit=\"return window.confirm('Are you sure you want to delete the user: ".$result->username." ?');
-                          \" class=\"delete-user-form\">
-                          
-                              <button type=\"submit\" class=\"btn\"><i class=\"icon-trash\"></i></button>
-                              <input type=\"hidden\" name=\"user\" value=\"".$result->username."\">
-                              <input type=\"hidden\" name=\"CMD\" value=\"removeUser\">
-                           </form>";
-                }
                 print "</td></tr>";
         $rowNum++;
         }
@@ -96,7 +86,7 @@ $stmt->execute();
 function updateUser(id){
 
     var userName = document.getElementById("userName"+id).innerHTML;                 
-    //var password = document.getElementById("password"+id).value;
+    var password = document.getElementById("password"+id).value;
     var date_registered= document.getElementById("date_registered"+id).value;
     var fName = document.getElementById("fName"+id).value;
     var lName = document.getElementById("lName"+id).value;
@@ -104,19 +94,23 @@ function updateUser(id){
     var address = document.getElementById("address"+id).value;
     var phone = document.getElementById("phone"+id).value;
     
-    $.post("./?c=user",{
-        CMD: "updateUser",
-        username:userName, 
-        //password:password, 
-        date_registered:date_registered,
-        fname:fName, 
-        lname:lName, 
-        email:email, 
-        address:address,
-        phone:phone}
-    ).done(function(msg){
-        alert(msg);
-    });
+    if (email == ""){
+        alert("Email cannot be blank."); 
+    } else {
+        $.post("./?c=user",{
+            CMD: "updateUser",
+            username:userName, 
+            password:password, 
+            date_registered:date_registered,
+            fname:fName, 
+            lname:lName, 
+            email:email, 
+            address:address,
+            phone:phone}
+        ).done(function(msg){
+            alert(msg);
+        });
+    }
 }
 
 </script>
