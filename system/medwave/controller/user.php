@@ -65,7 +65,7 @@ namespace MedWave\Controller {
                     header("Location: /".$this->getBaseDir()."/");
                 } else {
                     // Querying of Database to See if User Exists
-                    $sql = "SELECT COUNT(*) AS count, * FROM users WHERE user_name=:username AND password=:password"; ##TODO: Change query to join with persons table
+                    $sql = "SELECT COUNT(*) AS count, class, user_name FROM users WHERE user_name=:username AND password=:password"; 
                     $stmt = $this->dbHandle->prepare($sql);
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':password', $password);
@@ -73,7 +73,7 @@ namespace MedWave\Controller {
                     $results = $stmt->fetch(\PDO::FETCH_LAZY);
 
                     // If count is 0, then throw an error
-                    if ($results->count == 0) {
+                    if ($results->count != 1) {
                         $_SESSION['error'] = serialize($error_1001);
                         header("Location: /".$this->getBaseDir()."/");
                     } else {
