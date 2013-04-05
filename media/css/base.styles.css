@@ -18,8 +18,7 @@
 body { padding-top:60px; }
 .red { color:#FF0000; font-weight:bold; }
 .help-block.red { font-weight:normal; margin-top:20px; }
-.delete-user-form { display:inline-block; vertical-align:top; }
-.update-user-form { display:inline-block; vertical-align:top; }
+.delete-user-form { margin:0; }
 .container { margin:0 auto; width:700px; }
 .container-wide { margin:0 auto; width:960px; }
 .container-extra-wide { margin:0 auto; width:1060px; }
@@ -32,6 +31,8 @@ hr.half { width:465px; margin-top:40px; }
 	.reportForm .date { height:auto; }
 .uploadingForm {}
 	.uploadingForm div { margin-bottom:10px; }
+.formDoctorAdd { margin-top:10px; }
+	.formDoctorAdd div { margin-bottom:10px; }
 
 /* Record Style */
 .record { padding:20px; }
