@@ -1,33 +1,21 @@
 <?php
 
 	// Setting of data to make sure form is consistent from page to page
-	if (isset($_GET['patientName']))
-		$patientChecked = "checked=\"checked\"";
+	if (isset($_GET['patientName']) && !empty($_GET['patientName']))
+		$patient = $_GET['patientName'];
 
-	if (isset($_GET['testType']))
-		$testTypeChecked = "checked=\"checked\"";
+	if (isset($_GET['testType']) && !empty($_GET['testType']))
+		$testType = $_GET['testType'];
 
-	if (isset($_GET['timeHorizon'])) {
-		$timeChecked = "checked=\"checked\"";
-		$timeHorizon = "block";
-		$timeHorizonSet = "";
-	} else {
-		$timeHorizonSet = "disabled";	
-		$timeHorizon = "none";
-	}
-	
-	if (isset($_GET['timeHorizonSet'])) {
-		if ($_GET['timeHorizonSet'] == "week")
-			$weekSelected = "selected=\"selected\"";
-		if ($_GET['timeHorizonSet'] == "month")
-			$monthSelected = "selected=\"selected\"";
-		if ($_GET['timeHorizonSet'] == "year")
-			$yearSelected = "selected=\"selected\"";	
-	}
+	if (isset($_GET['from']) && !empty($_GET['from']))
+		$from = $_GET['from'];
+
+	if (isset($_GET['to']) && !empty($_GET['to']))
+		$to = $_GET['to'];
 	
 
 	// Beginning of OLAP Functionality
-	if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['timeHorizonSet'])) {
+	if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['from']) || isset($_GET['to'])) {
 		
 		// Creates temporary table of required data.
 		$sqlCreateTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS olap_analysis 
@@ -48,74 +36,136 @@
 
 		$determineSQL = "";
 		
-		if (isset($_GET['patientName']))
+		if (isset($_GET['patientName']) && !empty($_GET['patientName']))
 			$determineSQL .= "p";
-		if (isset($_GET['testType']))
+		if (isset($_GET['testType']) && !empty($_GET['testType']))
 			$determineSQL .= "t";
-		if (isset($_GET['timeHorizonSet']) && $_GET['timeHorizonSet'] == "week")
-			$determineSQL .= "w";
-		if (isset($_GET['timeHorizonSet']) && $_GET['timeHorizonSet'] == "month")
-			$determineSQL .= "m";
-		if (isset($_GET['timeHorizonSet']) && $_GET['timeHorizonSet'] == "year")
-			$determineSQL .= "y";
+		if (isset($_GET['from']) && !empty($_GET['from']))
+			$determineSQL .= "f";
+		if (isset($_GET['to']) && !empty($_GET['to']))
+			$determineSQL .= "o";
+
+		if (isset($_GET['spec']) && $_GET['spec'] == "m") 
+			$spec = "MONTH";
+		elseif (isset($_GET['spec']) && $_GET['spec'] == "w")
+			$spec = "WEEK";
+		else 
+			$spec = "YEAR"; 
+
 
 		// Determine what SQL statement should be used.
 		switch ($determineSQL) {
 			case "p":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY patient_name";
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->execute();
 				break;
 			case "t":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type";
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->execute();
 				break;
-			case "w":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY WEEK(test_date)";
+			case "f":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_date>=:fromDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->execute();
 				break;
-			case "m":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY MONTH(test_date)";
+			case "o":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_date<=:toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "y":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY YEAR(test_date)";
+			case "fo":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_date BETWEEN :fromDate AND :toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
 			case "pt":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, patient_name";
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_type=:testType";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->execute();
 				break;
-			case "pw":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY patient_name, WEEK(test_date)";
+			case "pf":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_date>=:fromDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->execute();
 				break;
-			case "pm":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY patient_name, MONTH(test_date)";
+			case "po":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_date<=:toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "py":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY patient_name, YEAR(test_date)";
+			case "tf":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType AND test_date>=:fromDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->execute();
 				break;
-			case "tw":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, WEEK(test_date)";
+			case "to":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType AND test_date<=:toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "tm":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, MONTH(test_date)";
+			case "ptf":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_type=:testType AND test_date>=:fromDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->execute();
 				break;
-			case "ty":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, YEAR(test_date)";
+			case "pto":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_type=:testType AND test_date<=:toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "ptw":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, patient_name, WEEK(test_date)";
+			case "pfo":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_date BETWEEN :fromDate AND :toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "ptm":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, patient_name, MONTH(test_date)";
+			case "tfo":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType AND test_date BETWEEN :fromDate AND :toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
-			case "pty":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis GROUP BY test_type, patient_name, YEAR(test_date)";
+			case "ptfo":
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_type=:testType AND test_date BETWEEN :fromDate AND :toDate GROUP BY ".$spec."(test_date)";
+				$stmt = $dbcon->prepare($sql);
+				$stmt->bindParam(':patient', $_GET['patientName']);
+				$stmt->bindParam(':testType', $_GET['testType']);
+				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
+				$stmt->bindParam(':toDate', date("Y-m-d", strtotime($_GET['to'])));
+				$stmt->execute();
 				break;
 			case "":
-				throw new \RuntimeException("Invalid arguments for OLAP");
+				$j = 0;
+				//throw new \RuntimeException("Invalid arguments for OLAP");
 				break;
-		}
-
-		try {
-			$stmt = $dbcon->prepare($sql);
-			$stmt->execute();
-		} catch (\PDOException $e) {
-			error_log($e->getMessage());
 		}
 		
 

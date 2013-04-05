@@ -57,17 +57,45 @@
 	    	<div class="analysis-form">
 	    		<form method="GET">
 	    			<div>
-	    				<label for="patientName" class="checkbox inline"><input type="checkbox" name="patientName" id="patientName" <?php print (isset($patientChecked) ? $patientChecked : ""); ?>>Patient Name</label>
-	    				<label for="testType" class="checkbox inline"><input type="checkbox" name="testType" id="testType" <?php print (isset($testTypeChecked) ? $testTypeChecked : ""); ?>>Test Type</label>
-	    				<label for="timeHorizonCheckbox" class="checkbox inline"><input type="checkbox" name="timeHorizon" id="timeHorizonCheckbox" <?php print (isset($timeChecked) ? $timeChecked : ""); ?>>Time</label>
-	    			</div>
-	    			<div style="display:<?php print $timeHorizon; ?>; margin-top:10px;" id="timeHorizon">
-	    				<label for="timeHorizonSet">Timeframe:</label>
-	    				<select name="timeHorizonSet" id="timeHorizonSet" <?php print (isset($timeHorizonSet) ? $timeHorizonSet : ""); ?>>
-	    					<option value="week" <?php print (isset($weekSelected) ? $weekSelected : ""); ?>>Week</option>
-	    					<option value="month" <?php print (isset($monthSelected) ? $monthSelected : ""); ?>>Month</option>
-	    					<option value="year" <?php print (isset($yearSelected) ? $yearSelected : ""); ?>>Year</option>
-	    				</select>
+	    				<div>
+		    				<label for="patientName">Patient</label>
+		    				<select name="patientName" rel="select" id="patientName" style="width:300px;">
+		    					<option value="">Not Set</option>
+		    					<?php
+		    						$sql = "SELECT DISTINCT patient_name FROM radiology_record";
+		    						$stmtList = $dbcon->prepare($sql);
+		    						$stmtList->execute();
+		    						while ($results = $stmtList->fetch(\PDO::FETCH_LAZY)) {
+		    							if (isset($patient) && $results->patient_name == $patient)
+		    								print "<option value=\"".$results->patient_name."\" selected=\"selected\">".$results->patient_name."</option>";
+		    							else 
+		    								print "<option value=\"".$results->patient_name."\">".$results->patient_name."</option>";
+		    						}
+		    					?>
+		    				</select>
+	    				</div>
+	    				<div>
+		    				<label for="testType">Test Type</label>
+		    				<select name="testType" rel="select" id="testType" style="width:300px;">
+		    					<option value="">Not Set</option>
+		    					<?php
+		    						$sql = "SELECT DISTINCT test_type FROM radiology_record";
+		    						$stmtList = $dbcon->prepare($sql);
+		    						$stmtList->execute();
+		    						while ($results = $stmtList->fetch(\PDO::FETCH_LAZY)) {
+		    							if (isset($testType) && $results->test_type == $testType)
+		    								print "<option value=\"".$results->test_type."\" selected=\"selected\">".$results->test_type."</option>";
+		    							else 
+		    								print "<option value=\"".$results->test_type."\">".$results->test_type."</option>";
+		    						}
+		    					?>
+		    				</select>
+	    				</div>
+	    				<div>
+	    					<label for="timeHorizonCheckbox">Time</label>
+	    					<input type="text" name="from" rel="date" value="<?php print (isset($from) ? $from : ""); ?>" placeholder="From">
+	    					<input type="text" name="to" rel="date" value="<?php print (isset($to) ? $to : ""); ?>" placeholder="To">
+	    				</div>
 	    			</div>
 	    			<div style="margin-top:20px;">
 	    				<input type="submit" class="btn" value="Analyze">
@@ -78,26 +106,54 @@
 	    	<div class="analysis-results" id="results">
 	    		<?php 
 	    			$i = 0;
-	    			if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['timeHorizon'])) {
+	    			if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['to']) || isset($_GET['from'])) {
+	    				if (!empty($_GET['to']) || !empty($_GET['from'])) {
+	    					print "<h3 class=\"text-right\">Drill Down/Roll Up</h3>";
+	    					print '<ul class="nav nav-pills pull-right">';
+	    						if (isset($_GET['spec']) && $_GET['spec'] == "m") {
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=w\">Week</a></li>";
+	    							print "<li class=\"active\"><a href=\"".$_SERVER['REQUEST_URI']."&spec=m\">Month</a></li>";
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=y\">Year</a></li>";
+	    						} elseif (isset($_GET['spec']) && $_GET['spec'] == "w") {
+	    							print "<li class=\"active\"><a href=\"".$_SERVER['REQUEST_URI']."&spec=w\">Week</a></li>";
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=m\">Month</a></li>";
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=y\">Year</a></li>";
+	    						} else {
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=w\">Week</a></li>";
+	    							print "<li><a href=\"".$_SERVER['REQUEST_URI']."&spec=m\">Month</a></li>";
+	    							print "<li class=\"active\"><a href=\"".$_SERVER['REQUEST_URI']."&spec=y\">Year</a></li>";
+	    						}
+	    					print '</ul>';
+	    				}
 	    				print "<table class=\"table table-striped table-hover table-bordered table-condensed\">";
 	    				print "<tr>
 	    					       <th>Image Count</th>";
-	    				if (isset($patientChecked)) print "<th>Patient</th>";
-	    				if (isset($testTypeChecked)) print "<th>Test Type</th>";
-	    				if (isset($timeChecked)) print "<th>Time</th>";
+	    				if (isset($patient)) print "<th>Patient</th>";
+	    				if (isset($testType)) print "<th>Test Type</th>";
+	    				if (isset($from) || isset($to)) print "<th>Time</th>";
 	    				print "</tr>";
     				}
+
     				while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
     					$i = 1;
     					print "<tr>";
     						print "<td>".$results->imgCount."</td>";
-    						if (isset($patientChecked)) print "<td>".$results->patient_name."</td>";
-    						if (isset($testTypeChecked)) print "<td>".$results->test_type."</td>";
-    						if (isset($timeChecked)) print "<td>".$results->test_date."</td>";
+    						if (isset($patient)) print "<td>".$results->patient_name."</td>";
+    						if (isset($testType)) print "<td>".$results->test_type."</td>";
+    						if (isset($from) || isset($to)) {
+    							print "<td>";
+    							if (isset($_GET['spec']) && $_GET['spec'] == 'w')
+    								print "Week: ".date("W", strtotime($results->test_date));
+    							elseif (isset($_GET['spec']) && $_GET['spec'] == 'm')
+    								print date("F", strtotime($results->test_date));
+    							else
+    								print date("Y", strtotime($results->test_date));
+    							print "</td>";
+    						}
     					print "</tr>";
     				}
     				print "</table>";
-    				if ($i == 0)
+    				if ($i == 0 && (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['from']) || isset($_GET['to'])))
     					print "<p>No OLAP Data :(</p>";
 	    		?>
 	    	</div>
