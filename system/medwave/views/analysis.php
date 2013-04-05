@@ -61,6 +61,7 @@
 		    				<label for="patientName">Patient</label>
 		    				<select name="patientName" rel="select" id="patientName" style="width:300px;">
 		    					<option value="">Not Set</option>
+		    					<option value="all" <?php print ($_GET['patientName']=="all"? "selected" : ""); ?>>All</option>
 		    					<?php
 		    						$sql = "SELECT DISTINCT patient_name FROM radiology_record";
 		    						$stmtList = $dbcon->prepare($sql);
@@ -78,6 +79,7 @@
 		    				<label for="testType">Test Type</label>
 		    				<select name="testType" rel="select" id="testType" style="width:300px;">
 		    					<option value="">Not Set</option>
+		    					<option value="all" <?php print ($_GET['testType']=="all"? "selected" : ""); ?>>All</option>
 		    					<?php
 		    						$sql = "SELECT DISTINCT test_type FROM radiology_record";
 		    						$stmtList = $dbcon->prepare($sql);

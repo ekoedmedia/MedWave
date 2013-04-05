@@ -17,7 +17,7 @@
 				WHERE MATCH(s.patient_name, s.diagnosis, s.description) AGAINST(:search IN BOOLEAN MODE) 
 				ORDER BY (6*freq1)+(3*freq2)+(freq3) DESC";
 		$stmt = $dbcon->prepare($sql);
-		$stmt->execute(array(":search" => $_GET['search']."*"));
+		$stmt->execute(array(":search" => "*".$_GET['search']."*"));
 
 	// Get Records from Specified Time Range
 	} elseif (isset($_GET['to']) && isset($_GET['from']) && isset($_GET['order'])) {
