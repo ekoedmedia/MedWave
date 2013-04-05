@@ -40,6 +40,15 @@ Via command line again, run `php system/console` and create a user with role a.
 #### Step 6: Finished
 Celebrate, you have now finished installing MedWave.
 
+Systems Used
+------------
+
+* Twitter Bootstrap
+* jQuery
+* jQuery UI (Date Picker)
+* Select2
+* Imagine (Image Resizing)
+
 Learn More
 ----------
 
