@@ -13,8 +13,12 @@ $directory = ltrim(dirname($_SERVER['PHP_SELF']), DIRECTORY_SEPARATOR);
 // Include Core
 $core = new Ekoed\Core\System($directory);
 
+if (empty($directory)) {
+	$directory = ".";
+}
+
 // Connect To DB
-$dbClass = new Ekoed\Database\DB();
+$dbClass = new Ekoed\Database\DB($directory);
 $dbcon = $dbClass->getDbcon("medwave");
 $core->setDbHandle($dbcon);
 

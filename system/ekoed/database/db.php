@@ -37,7 +37,7 @@ namespace Ekoed\Database {
                                                                          $envir->host,
                                                                          $envir->port);
                     try {
-                        $this->dbcon[$envir->name] = new ORM\Connector($db_string, $envir->user, $envir->pass, array(\PDO::ATTR_PERSISTENT => true));
+                        $this->dbcon[$envir->conName] = new ORM\Connector($db_string, $envir->user, $envir->pass, array(\PDO::ATTR_PERSISTENT => true));
                     } catch (\PDOException $e) {
                         print $e->getMessage();
                     }
