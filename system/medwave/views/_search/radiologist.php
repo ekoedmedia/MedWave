@@ -18,7 +18,7 @@
 				AND r.radiologist_name=:user 
 				ORDER BY (6*freq1)+(3*freq2)+(freq3) DESC";
 		$stmt = $dbcon->prepare($sql);
-		$stmt->execute(array(":search" => $_GET['search']."*", ":user" => $_SESSION['username']));
+		$stmt->execute(array(":search" => "*".$_GET['search']."*", ":user" => $_SESSION['username']));
 
 	// Get Records from Specified Time Range
 	} elseif (isset($_GET['to']) && isset($_GET['from']) && isset($_GET['order'])) {
@@ -37,6 +37,7 @@
 	}
 ?>
 <div class="content-wrapper">
+	<hr>
 	<div class="search-results">
 		<?php
 			$i = 0; // Used for displaying if there are no results or not.
@@ -100,11 +101,11 @@
 	$('[rel="recordImgThumb"]').click(function(){
 		$(this).hide();
 		$(this).parent().find('[rel="recordImgReg"]').show();
-		$(this).parent().find('[rel="recordImgFull"]').show();
+		$(this).parent().parent().find('[rel="recordImgFull"]').show();
 	});
 	$('[rel="recordImgReg"]').click(function(){
 		$(this).hide();
 		$(this).parent().find('[rel="recordImgThumb"]').show();
-		$(this).parent().find('[rel="recordImgFull"]').hide();
+		$(this).parent().parent().find('[rel="recordImgFull"]').hide();
 	});
 </script>

@@ -89,7 +89,7 @@
 			</div>
 			<div>
 				<label for="files">Choose a file(s) to upload:</label>
-				<input name="uploadedfile[]" type="file" multiple="multiple" id="files" required>
+				<input name="uploadedfile[]" type="file" multiple="multiple" id="files">
 			</div>
 			<div>
 				<input type="submit" class="btn" value="submit record">

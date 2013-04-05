@@ -44,6 +44,9 @@
 			</p>
 		</div>
 	</div>
+	<footer class="footer">
+		<?php include '_base/auth.footer.php'; ?>
+	</footer>
 </body>
 </html>
 
