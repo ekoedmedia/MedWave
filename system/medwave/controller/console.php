@@ -21,6 +21,7 @@ namespace MedWave\Controller {
         protected $dbHandle;
         protected $fp;
         protected $colors;
+        protected $baseDir;
 
         /**
          * Construction executes Dynamic Function
@@ -28,11 +29,12 @@ namespace MedWave\Controller {
          * @var String destination
          * @var Object SQLite
          */
-        public function __construct(&$dbHandle, &$fp, $colors)
+        public function __construct(&$dbHandle, &$fp, $colors, $baseDir)
         {
             $this->dbHandle = $dbHandle;
             $this->fp = $fp;
             $this->colors = $colors;
+            $this->baseDir = $baseDir;
         }
 
 
@@ -104,7 +106,7 @@ namespace MedWave\Controller {
             }
 
             // Database Installation
-            $sql = file_get_contents("system/setup.sql");
+            $sql = file_get_contents($this->baseDir."/setup.sql");
             try {
                 $this->dbHandle->exec($sql);
             } catch (\Exception $e) {

@@ -18,7 +18,7 @@ if (empty($directory)) {
 }
 
 // Connect To DB
-$dbClass = new Ekoed\Database\DB($directory);
+$dbClass = new Ekoed\Database\DB($directory."/settings.json");
 $dbcon = $dbClass->getDbcon("medwave");
 $core->setDbHandle($dbcon);
 
@@ -41,7 +41,7 @@ $last_line = false;
 $message = '';
 while (!$last_line) {
 	$next_line = fgets($fp, 1024);
-	$console = new MedWave\Controller\Console($dbcon, $fp, $colors);
+	$console = new MedWave\Controller\Console($dbcon, $fp, $colors, $directory);
 	switch ($next_line) {
 		case "user:create\n":
 			$console->createUser();

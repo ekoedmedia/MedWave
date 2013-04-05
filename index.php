@@ -9,6 +9,10 @@ $autoloader->registerLoader();
 
 $directory = ltrim(dirname($_SERVER['PHP_SELF']), DIRECTORY_SEPARATOR);
 
+if (empty($directory)) {
+	$directory = ".";
+}
+
 $core = new Ekoed\Core\System($directory);
 $dbClass = new Ekoed\Database\DB();
 $dbcon = $dbClass->getDbcon("medwave");
