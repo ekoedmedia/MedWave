@@ -22,6 +22,24 @@ Installation
 
 To install MedWave it is best to follow the step provided below, or for more detailed steps see: [MedWave Installation in-depth][2]
 
+#### Step 1: Create MySQL Database and User
+Create a MySQL Database and User for MedWave on your server. Remember the login details as you will need them.
+
+#### Step 2: Get MedWave
+Get MedWave either by downloading the zip, or cloning it via command line.
+
+#### Step 3: Edit settings.json
+Edit system/settings.json to contain your connection information. *DO NOT EDIT conName, or DB Type*
+
+#### Step 4: Run console install script
+Via command line, run `php system/console` to and follow the install commands instructions.
+
+#### Step 5: Create Administrator Account
+Via command line again, run `php system/console` and create a user with role a.
+
+#### Step 6: Finished
+Celebrate, you have now finished installing MedWave.
+
 Learn More
 ----------
 
