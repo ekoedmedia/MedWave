@@ -55,7 +55,7 @@
 	    <div class="content-wrapper">
 	    	<h2>Data Analysis</h2>
 	    	<div class="analysis-form">
-	    		<form method="GET">
+	    		<form method="GET" action="./analysis">
 	    			<div>
 	    				<div>
 		    				<label for="patientName">Patient</label>

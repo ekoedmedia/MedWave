@@ -47,6 +47,7 @@
 						<li><a href="#search">Search</a></li>
 						<li><a href="#analysis">Data Analysis</a></li>
 						<li class="nav-header">Addition Information</li>
+						<li><a href="#used">Used Systems</a></li>
 						<li><a href="#license">License</a></li>
 					</ul>
 				</div>
@@ -196,7 +197,17 @@
 					<img src="https://raw.github.com/ekoedmedia/MedWave/master/media/report-img/19.png">
 
 
+					<a name="used"></a>
+					<div class="margin-top:50px;"></div>
+					<h3>Used Systems</h3>
 
+					<ul>
+						<li>Twitter Bootstrap - Themeing</li>
+						<li>Select2 - Searchable Select Menus</li>
+						<li>jQuery - Various things such as AJAX and Selecting Things</li>
+						<li>jQuery UI - Used for Date Picker</li>
+						<li>Imagine - Image resizing bundle for Image Uploading</li>
+					</ul>
 
 
 					<a name="license"></a>
