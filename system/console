@@ -27,7 +27,6 @@ $colors = new Ekoed\Console\Colors();
 // Available Commands
 $availableCommands = array("user:create - ".$colors->colorString("Create User Account on MedWave", 'red', null),
 						   "user:remove - ".$colors->colorString("Remove User Account from MedWave", 'red', null),
-						    "user:update - ".$colors->colorString("update user on MedWave", 'red', null),
 						   "install - ".$colors->colorString("Install MedWave", 'red', null),
 						   "exit - ".$colors->colorString("Exit the console", 'red', null));
 $commands = implode("\n", $availableCommands);

@@ -1,4 +1,5 @@
 <?php
+	// Checks if Diagnosis is Set as well as To/From to make sure there is a request for the page
 	$diag = strtolower(trim($_GET['diagnosis']));
 	$to = urldecode(trim($_GET['to']));
 	$from = urldecode(trim($_GET['from']));

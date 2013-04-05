@@ -272,7 +272,7 @@
 				$stmt->execute();
 				break;
 			case "Ptfo":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType AND test_date BETWEEN :fromDate AND :toDate GROUP BY patient_name, ".$spec."(test_date)";
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_date BETWEEN :fromDate AND :toDate GROUP BY test_type, ".$spec."(test_date)";
 				$stmt = $dbcon->prepare($sql);
 				$stmt->bindParam(':patient', $_GET['patientName']);
 				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));
@@ -280,7 +280,7 @@
 				$stmt->execute();
 				break;
 			case "pTfo":
-				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE patient_name=:patient AND test_date BETWEEN :fromDate AND :toDate GROUP BY test_type, ".$spec."(test_date)";
+				$sql = "SELECT SUM(imgCount) AS imgCount, patient_name, test_type, test_date FROM olap_analysis WHERE test_type=:testType AND test_date BETWEEN :fromDate AND :toDate GROUP BY patient_name, ".$spec."(test_date)";
 				$stmt = $dbcon->prepare($sql);
 				$stmt->bindParam(':testType', $_GET['testType']);
 				$stmt->bindParam(':fromDate', date("Y-m-d", strtotime($_GET['from'])));

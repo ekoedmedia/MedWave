@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Gets the list of Users in the users/persons table and displays them
+ * in a table.
+ */
+
+// Checks if this is an AJAX request, includes base system if it is
 if (isset($_GET['ajax']))
     include "../../../system.php";
 

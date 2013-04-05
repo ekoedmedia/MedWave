@@ -1,4 +1,8 @@
 <?php
+    /**
+     * Queries Database for Report Information then generates a table 
+     * of data for use in Report Gen Results
+     */
 	$sql = "SELECT p.user_name AS username, p.first_name As nameF, p.last_name As nameL, p.address As address, p.phone AS phone, MIN(r.test_date) AS testDate, r.diagnosis As diagnosis
             FROM persons p RIGHT JOIN radiology_record r         
             ON p.user_name = r.patient_name 

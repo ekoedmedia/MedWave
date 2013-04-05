@@ -1,4 +1,5 @@
 <?php
+// Retrieves Account Details and sets Variables for view (account.php)
 $sql = "SELECT * FROM persons WHERE user_name=:name";
 $stmt = $dbcon->prepare($sql);
 $stmt->execute(array(":name" => $_SESSION['username']));

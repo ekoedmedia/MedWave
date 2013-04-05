@@ -1,6 +1,11 @@
 <?php
 
-// Put here to make sure it is an AJAX request, so no errors happen.
+/**
+ * Gets the list of Doctor and Patients in the family_doctor table and displays them
+ * in a table.
+ */
+
+// Checks if this is an AJAX request, includes base system if it is
 if (isset($_GET['ajax']))
     include "../../../system.php";
 

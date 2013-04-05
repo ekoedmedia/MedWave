@@ -107,6 +107,9 @@
 	    	<hr>
 	    	<div class="analysis-results" id="results">
 	    		<?php 
+	    			/** 
+	    			 * Displaying of Results of OLAP Starts Here
+	    			 */
 	    			$i = 0;
 	    			if (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['to']) || isset($_GET['from'])) {
 	    				if (!empty($_GET['to']) || !empty($_GET['from'])) {
@@ -135,24 +138,25 @@
 	    				if (isset($from) || isset($to)) print "<th>Time</th>";
 	    				print "</tr>";
     				}
-
-    				while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
-    					$i = 1;
-    					print "<tr>";
-    						print "<td>".$results->imgCount."</td>";
-    						if (isset($patient)) print "<td>".$results->patient_name."</td>";
-    						if (isset($testType)) print "<td>".$results->test_type."</td>";
-    						if (isset($from) || isset($to)) {
-    							print "<td>";
-    							if (isset($_GET['spec']) && $_GET['spec'] == 'w')
-    								print "Week: ".date("W", strtotime($results->test_date));
-    							elseif (isset($_GET['spec']) && $_GET['spec'] == 'm')
-    								print date("F", strtotime($results->test_date));
-    							else
-    								print date("Y", strtotime($results->test_date));
-    							print "</td>";
-    						}
-    					print "</tr>";
+    				if (isset($stmt)) {
+	    				while ($results = $stmt->fetch(\PDO::FETCH_LAZY)) {
+	    					$i = 1;
+	    					print "<tr>";
+	    						print "<td>".$results->imgCount."</td>";
+	    						if (isset($patient)) print "<td>".$results->patient_name."</td>";
+	    						if (isset($testType)) print "<td>".$results->test_type."</td>";
+	    						if (isset($from) || isset($to)) {
+	    							print "<td>";
+	    							if (isset($_GET['spec']) && $_GET['spec'] == 'w')
+	    								print "Week: ".date("W", strtotime($results->test_date));
+	    							elseif (isset($_GET['spec']) && $_GET['spec'] == 'm')
+	    								print date("F", strtotime($results->test_date));
+	    							else
+	    								print date("Y", strtotime($results->test_date));
+	    							print "</td>";
+	    						}
+	    					print "</tr>";
+	    				}
     				}
     				print "</table>";
     				if ($i == 0 && (isset($_GET['patientName']) || isset($_GET['testType']) || isset($_GET['from']) || isset($_GET['to'])))

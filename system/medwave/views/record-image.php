@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * Displays Record Image based on values from Database
+	 * based on parameters passed to it.
+	 */
+
 	include '_base/check.auth.php';
 	$dir = dirname(__FILE__);
 	// If iid is not set/valid display no image

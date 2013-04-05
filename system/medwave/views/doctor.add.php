@@ -46,6 +46,7 @@
 					<label>Doctor Name<label>
 					<select name="doctor" rel="select2" style="width:300px;">
 						<?php
+							// Prints out a list of Doctor Names
 							$sql = "SELECT u.user_name AS username, p.first_name AS first_name, p.last_name AS last_name FROM users u LEFT JOIN persons p ON u.user_name=p.user_name WHERE class='d'";
 							$stmt = $dbcon->prepare($sql);
 							$stmt->execute();
@@ -65,6 +66,7 @@
 					<label>Patient Name<label>
 					<select name="patient" rel="select2" style="width:300px;">
 						<?php
+							// Prints out a list of Patient Names
 							$sql = "SELECT u.user_name AS username, p.first_name AS first_name, p.last_name AS last_name FROM users u LEFT JOIN persons p ON u.user_name=p.user_name WHERE class='p'";
 							$stmt = $dbcon->prepare($sql);
 							$stmt->execute();
